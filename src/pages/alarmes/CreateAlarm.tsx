@@ -70,8 +70,70 @@ class CreateAlarm extends Component {
 		}
 	};
 
+	setFutureRpeatAlarm = async () => {
+		const {futureFireDate, update} = this.state;
+
+		const _seconds = parseInt(futureFireDate, 10) * 60 * 1000;
+		const fire_date = ReactNativeAN.parseDate(new Date(Date.now() + _seconds));
+
+		const details = {
+			...repeatAlarmNotifData,
+			fire_date,
+		};
+		console.log(`alarm set: ${fire_date}`);
+
+		try {
+			const alarm = await ReactNativeAN.scheduleAlarm(details);
+			console.log(alarm);
+			if (alarm) {
+				this.setState({
+					update: [...update, {date: `alarm set: ${fire_date}`, id: alarm.id}],
+				});
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	setFutureAlarm = async () => {
+		const {futureFireDate, update} = this.state;
+
+		const _seconds = parseInt(futureFireDate, 10) * 60 * 1000;
+		const fire_date = ReactNativeAN.parseDate(new Date(Date.now() + _seconds));
+
+		const details = {
+			...alarmNotifData,
+			fire_date,
+			sound_name: 'iphone_ringtone.mp3',
+		};
+		console.log(`alarm set: ${fire_date}`);
+
+		try {
+			const alarm = await ReactNativeAN.scheduleAlarm(details);
+			console.log(alarm);
+			if (alarm) {
+				this.setState({
+					update: [...update, {date: `alarm set: ${fire_date}`, id: alarm.id}],
+				});
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	stopAlarmSound = () => {
 		ReactNativeAN.stopAlarmSound();
+	};
+
+	sendNotification = () => {
+		const details = {
+			...alarmNotifData,
+			data: {content: 'my notification id is 45'},
+			sound_name: 'iphone_ringtone.mp3',
+			volume: 0.9,
+		};
+		console.log(details);
+		ReactNativeAN.sendNotification(details);
 	};
 
 	componentDidMount() {
@@ -124,7 +186,6 @@ class CreateAlarm extends Component {
 
 	viewAlarms = async () => {
 		const list = await ReactNativeAN.getScheduledAlarms();
-		setList(list)
 
 		console.log(list);
 		const update = list.map((l) => ({
@@ -175,6 +236,27 @@ class CreateAlarm extends Component {
 						style={styles.date}
 						onChangeText={(text) => this.setState({futureFireDate: text})}
 						value={futureFireDate}
+					/>
+				</View>
+				<View style={styles.margin}>
+					<Button
+						onPress={this.setFutureAlarm}
+						title="Set Future Alarm"
+						color="#007fff"
+					/>
+				</View>
+				<View style={styles.margin}>
+					<Button
+						onPress={this.setFutureRpeatAlarm}
+						title="Set Future Alarm with Repeat"
+						color="#007fff"
+					/>
+				</View>
+				<View style={styles.margin}>
+					<Button
+						onPress={this.sendNotification}
+						title="Send Notification Now"
+						color="#007fff"
 					/>
 				</View>
 				<View style={styles.margin}>

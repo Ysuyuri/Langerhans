@@ -56,8 +56,7 @@ function NewAlarm() {
       {list.map((dev) => {
             return (                
               <View style={{justifyContent: 'center', paddingLeft: 10, backgroundColor: '#F5F5F5', borderRadius: 10, marginBottom: 5}} key={dev.id}>
-                  <Text style={styles.TitleAlarm}
-                  onPress={ReactNativeAN.deleteAlarm(dev.id)}>
+                  <Text style={styles.TitleAlarm}>
                     {`${dev.hour}:${dev.minute}`}
                   </Text>
                   <Text style={styles.DateAlarm}>
