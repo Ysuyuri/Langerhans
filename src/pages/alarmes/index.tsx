@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import HeaderLayout from '../HomeScreen/header';
 import { Provider, Portal, FAB, Switch } from 'react-native-paper';
@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 import ReactNativeAN from 'react-native-alarm-notification';
@@ -134,6 +135,17 @@ function consoleLog() {
                     <Text style={styles.DateAlarm}>
                       {`${dev.day}/${dev.month}/${dev.year} | ${dev.title}`}
                     </Text>
+                    <TouchableOpacity
+                      style={styles.deleteImage}
+                      onPress={() => ReactNativeAN.deleteAlarm(dev.id)}
+                      >
+                        <Icon
+                          name="trash-outline"
+                          color="black"
+                          size={40}
+                          style={styles.iconRight}
+                        />
+                      </TouchableOpacity>
                   </View>
                 </CollapseHeader>
                 <CollapseBody>
@@ -156,6 +168,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  deleteImage:{
+    justifyContent:"center",
+    paddingLeft: 5,
+  },
+  iconRight: {
+    marginTop: 5,
+    marginRight: 5
   },
   DateAlarm:{
     fontSize: 15,
