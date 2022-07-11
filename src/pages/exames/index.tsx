@@ -7,7 +7,7 @@ var RNFS = require('react-native-fs')
 
 import firebase from 'firebase';
 
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Exames(props) {
   const [state, setState] = React.useState({ open: false });
@@ -97,6 +97,7 @@ export default function Exames(props) {
         marginTop: 2,
         color: 'black',
         }}> Arquivos </Text>
+        <ScrollView>
         {data.map((dev) => {
           return (
             <View style={styles.Tasks} key={dev.filename}>
@@ -130,7 +131,7 @@ export default function Exames(props) {
               </View>
           )
         })}
-
+        </ScrollView>
 
       <Portal>
         <FAB.Group
