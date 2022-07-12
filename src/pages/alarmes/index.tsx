@@ -29,9 +29,8 @@ const [date, setDate] = useState(new Date(Date.now()));
 const [show, setShow] = useState(false);
 
 const onChange = (event, selectedDate) => {
-  /*const currentDate = selectedDate;*/
   setShow(false);
-  /*setDate(currentDate);*/
+  setDate(new Date(Date.now()));
   const alarmNotifData = {
     title: 'Alarm',
     message: 'Stand up',
