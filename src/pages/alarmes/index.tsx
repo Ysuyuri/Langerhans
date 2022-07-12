@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import HeaderLayout from '../HomeScreen/header';
 import { Provider, Portal, FAB, Switch } from 'react-native-paper';
@@ -21,6 +21,7 @@ const Alarme = (props, {navigation}) => {
   const updateList = async() => {
     const l = await ReactNativeAN.getScheduledAlarms();
     setList(l)
+    setDate(new Date(Date.now()))
   }
 
 /*------------------------------------------------------------DATETIMEPICKER------------------------------------------------------------*/
@@ -29,9 +30,7 @@ const [date, setDate] = useState(new Date(Date.now()));
 const [show, setShow] = useState(false);
 
 const onChange = (event, selectedDate) => {
-  /*const currentDate = selectedDate;*/
   setShow(false);
-  /*setDate(currentDate);*/
   const alarmNotifData = {
     title: 'Alarm',
     message: 'Stand up',
@@ -63,9 +62,11 @@ useFocusEffect(
 function NewAlarm() {
   props.navigation.navigate('CreateAlarm');
 }
-function consoleLog() {
-  console.log(moment(date).format('DD-MM-YYYY HH:mm:ss'))
+function deleteAlarm() {
+  ReactNativeAN.deleteAlarm()
 }
+const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   return (
     <Provider>
@@ -77,18 +78,13 @@ function consoleLog() {
           actions={[
             {
               icon: '',
-              label: 'Teste',
+              label: 'Novo Alarme todas opções',
               onPress: NewAlarm,
             },
             {
               icon: '',
-              label: 'Consulta',
+              label: 'Novo Alarme',
               onPress: showMode,
-            },
-            {
-              icon: '',
-              label: 'ConsultaLogAlarme',
-              onPress: consoleLog,
             },
           ]}
           onStateChange={onStateChange}
@@ -126,34 +122,39 @@ function consoleLog() {
       <ScrollView>
       {list.map((dev) => {
             return (
-              <Collapse> 
-              <CollapseHeader>
-                  <View style={{justifyContent: 'center', paddingLeft: 10, backgroundColor: '#F5F5F5', borderRadius: 10, marginBottom: 5}} key={dev.id}>
+                  <View style={styles.Tasks} key={dev.id}>
                     <Text style={styles.TitleAlarm}>
                       {`${dev.hour}:${dev.minute}`}
                     </Text>
                     <Text style={styles.DateAlarm}>
                       {`${dev.day}/${dev.month}/${dev.year} | ${dev.title}`}
                     </Text>
-                    <TouchableOpacity
-                      style={styles.deleteImage}
-                      onPress={() => ReactNativeAN.deleteAlarm(dev.id)}
-                      >
-                        <Icon
-                          name="trash-outline"
-                          color="black"
-                          size={40}
-                          style={styles.iconRight}
-                        />
-                      </TouchableOpacity>
+                    <Button
+                      onPress={() => {
+                        const alarmNotifData = {
+                          alarmId: dev.id,
+                          title: 'teste',
+                          message: 'Stand up',
+                          vibrate: true,
+                          play_sound: true,
+                          schedule_type: 'once',
+                          channel: 'wakeup',
+                          data: {content: 'my notification id is 22'},
+                          loop_sound: true,
+                          has_button: true,
+                          fire_date: dev.firedate
+                        }
+                        ReactNativeAN.scheduleAlarm(alarmNotifData)
+                      }}
+                      title="Set Future Alarm with Repeat"
+                      color="#007fff"
+                    />
+                    {/*<Switch
+                    style={{marginRight: 5}}
+                    value={isSwitchOn}
+                    onValueChange={onToggleSwitch}
+                    />*/}
                   </View>
-                </CollapseHeader>
-                <CollapseBody>
-                <View style={{justifyContent: 'center', paddingLeft: 10, backgroundColor: '#F5F5F5', borderRadius: 10, marginBottom: 5}}>
-                  <Text>Funcionou</Text>
-                </View>
-                </CollapseBody>
-              </Collapse>
             )}
       )}
       </ScrollView>
@@ -169,6 +170,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  containerCollapse: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    textAlign: 'center'
+  },
+  textCollapse: {
+    marginTop: 10,
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'center'
+  },
   deleteImage:{
     justifyContent:"center",
     paddingLeft: 5,
@@ -181,8 +193,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     alignContent:"flex-start",
     color:"black",
-    marginBottom: 5,
-    marginLeft: 5
+    marginBottom: -45,
+    marginRight:0,
+    marginLeft: -300,
+    padding: 60,
    },
   TitleAlarm:{
     fontSize: 40,
@@ -194,6 +208,10 @@ const styles = StyleSheet.create({
     color:"black",
    },
    Tasks:{
+    paddingLeft: 10, 
+    backgroundColor: '#F5F5F5', 
+    borderRadius: 10, 
+    marginBottom: 5,
     width:"100%",
     flexDirection:"row",
     justifyContent:"space-between",
@@ -212,7 +230,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     textAlign: 'center'
-    
   },  
   alarme: {
     fontSize: 100,
