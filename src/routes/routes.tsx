@@ -18,6 +18,7 @@ import { DrawerContent } from './DrawerContent';
 import { Icon } from '@rneui/themed';
 import 'react-native-gesture-handler';
 import CreateAlarm from '../pages/alarmes/CreateAlarm';
+import EditAlarm from '../pages/alarmes/EditAlarm';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,23 +62,25 @@ export default function InitialRoute() {
 
 function Route({navigation}) {
   return (
-      <Stack.Navigator screenOptions={{
-        headerStyle: { backgroundColor: '#608EDA' },
-        headerShown: true,
-        gestureEnabled: false,
-        title: '',
-        headerLeft: () => (
-          <View style={{ margin: 10 }}>
-              <Icon name="menu" color="white" size={35} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
-          </View>
-        ),
-      }}>
-        <Stack.Screen name="LoginScreen" component={Login} options={{headerShown: false}} />
-        <Stack.Screen name="ExamesScreen" component={Drawers} />
-        <Stack.Screen name="Configurações do usuárioScreen" component={UserConf} options={{headerShown: false}} />
-        <Stack.Screen name="ImageShow" component={ImgShow} options={{headerShown: false}} />
-        <Stack.Screen name="CreateAlarm" component={CriarAlarme} options={{headerShown: false}} />
-      </Stack.Navigator>
+        <Stack.Navigator>
+          <Stack.Screen name="LoginScreen" component={Login} options={{headerShown: false}} />
+          <Stack.Screen name="Logout" component={InitialRoute} options={{headerShown: false}} />
+          <Stack.Screen name="ExamesScreen" component={Drawers} options={{
+          headerStyle: { backgroundColor: '#608EDA' },
+          headerShown: true,
+          gestureEnabled: false,
+          title: '',
+          headerLeft: () => (
+            <View style={{ margin: 10 }}>
+                <Icon name="menu" color="white" size={35} onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
+            </View>
+          ),
+        }}/>
+          <Stack.Screen name="Configurações do usuárioScreen" component={UserConf} options={{headerShown: false}} />
+          <Stack.Screen name="ImageShow" component={ImgShow} options={{headerShown: false}} />
+          <Stack.Screen name="CreateAlarm" component={CriarAlarme} options={{headerShown: false}} />
+          <Stack.Screen name="Editar Alarme" component={EditAlarm} options={{headerShown: true}}/>
+        </Stack.Navigator>
   );
 };
 

@@ -13,7 +13,7 @@ export function DrawerContent ({ navigation }, props) {
 
     function logout() {
         firebase.auth().signOut().then(() => {
-          navigation.navigate('LoginScreen')
+          navigation.navigate('Logout');
           setIsLoading(false);
         }).catch((error) => {
         })

@@ -5,8 +5,7 @@ import { Provider, Portal, FAB, Switch } from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Icon } from '@rneui/themed';
 
 
 import ReactNativeAN from 'react-native-alarm-notification';
@@ -63,9 +62,7 @@ useFocusEffect(
 function NewAlarm() {
   props.navigation.navigate('CreateAlarm');
 }
-function deleteAlarm() {
-  ReactNativeAN.deleteAlarm()
-}
+
 const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
@@ -124,37 +121,20 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
       {list.map((dev) => {
             return (
                   <View style={styles.Tasks} key={dev.id}>
-                    <Text style={styles.TitleAlarm}>
-                      {`${dev.hour}:${dev.minute}`}
-                    </Text>
+                      <Text style={styles.TitleAlarm} >
+                        {`${dev.hour}:${dev.minute}`}
+                      </Text>
                     <Text style={styles.DateAlarm}>
                       {`${dev.day}/${dev.month}/${dev.year} | ${dev.title}`}
                     </Text>
-                    <Button
-                      onPress={() => {
-                        const alarmNotifData = {
-                          alarmId: dev.id,
-                          title: 'teste',
-                          message: 'Stand up',
-                          vibrate: true,
-                          play_sound: true,
-                          schedule_type: 'once',
-                          channel: 'wakeup',
-                          data: {content: 'my notification id is 22'},
-                          loop_sound: true,
-                          has_button: true,
-                          fire_date: dev.firedate
-                        }
-                        ReactNativeAN.scheduleAlarm(alarmNotifData)
-                      }}
-                      title="Set Future Alarm with Repeat"
-                      color="#007fff"
-                    />
-                    {/*<Switch
-                    style={{marginRight: 5}}
-                    value={isSwitchOn}
-                    onValueChange={onToggleSwitch}
-                    />*/}
+                    <TouchableOpacity onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, intervalo: dev.interval}) }}>
+                      <Icon 
+                      name="edit"
+                      type="Feather"
+                      color="black"
+                      style={styles.IconEdit}
+                      />
+                    </TouchableOpacity>
                   </View>
             )}
       )}
@@ -175,6 +155,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     textAlign: 'center'
+  },
+  IconEdit: {
+    marginRight: 15,
+    marginTop: 30
   },
   textCollapse: {
     marginTop: 10,

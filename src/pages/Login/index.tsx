@@ -127,7 +127,6 @@ const Login = (props, { navigation }) => {
       height: 50,
       fontSize: 16,
       fontWeight: 'bold'
-  
     },
     botaoLogin: {
       width: 300,
