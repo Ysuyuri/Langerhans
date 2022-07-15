@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity,  } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { TextInput } from 'react-native-paper';
+import ReactNativeAN from 'react-native-alarm-notification';
 
-const EditAlarm = (props) => {
+const EditAlarm = (props, {navigation}) => {
 
 const id = props.route.params.id
 const hora = props.route.params.hora
@@ -20,18 +20,44 @@ const [show, setShow] = useState(false);
 const [hour, setHour] = useState(`${hora}:${minuto}`)
 const [title, setTitle] = useState(titulo);
 const [interval, setInterval] = useState();
-const [placeTitulo, setPlaceTitulo] = useState(`Título: ${title}`)
+const [horaEdit, setHoraEdit] = useState(`${dia}-${mes}-${ano} ${hora}:${minuto}:00`)
 
 
 const onChange = (event, selectedDate) => {
     setShow(false);
     setDate(new Date(Date.now()));
     setHour(moment(selectedDate).format('HH:mm'));
+    setHoraEdit(moment(selectedDate).format('DD-MM-YYYY HH:mm:ss'))
   };
   
 const showMode = () => {
     setShow(true);
 };
+
+const DeleteAlarm = () => {
+  ReactNativeAN.deleteAlarm(id);
+  ReactNativeAN.deleteRepeatingAlarm(id);
+  props.navigation.navigate('Alarme')
+}
+
+const AlterarAlarm = () => {
+  ReactNativeAN.deleteAlarm(id);
+  ReactNativeAN.deleteRepeatingAlarm(id);
+  const alarmNotifData = {
+    title: title,
+    message: 'Stand up',
+    vibrate: true,
+    play_sound: true,
+    schedule_type: 'once',
+    channel: 'wakeup',
+    data: {content: 'my notification id is 22'},
+    loop_sound: true,
+    has_button: true,
+    fire_date: horaEdit
+  }
+  ReactNativeAN.scheduleAlarm(alarmNotifData)
+  props.navigation.navigate('Alarme')
+}
 
   return (
     <View style={styles.container}>
@@ -40,12 +66,21 @@ const showMode = () => {
               <Text style={styles.EditarHoraTexto}>Alterar</Text>          
         </TouchableOpacity>
 
-        <Text style={styles.TextInput}>{hour}</Text>
-        <TextInput style={styles.input}
-            placeholder={placeTitulo}
-            value=''
-            onChangeText={(value) => setTitle(value)}
-        />
+        <View style={styles.fundo}>
+          <View style={styles.opcoes}>
+            <Text style={styles.text}>Título: </Text>
+            <TextInput placeholder={titulo} style={styles.TextInput} onChangeText={setTitle}/>
+          </View>
+        </View>
+
+        <View style={{flexDirection:"row"}}>
+        <TouchableOpacity style={styles.ApagarAlarme} onPress={AlterarAlarm}>
+            <Text style={{justifyContent: 'center', color: 'black', fontSize: 15, fontWeight: 'bold'}}>Alterar alarme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.ApagarAlarme} onPress={DeleteAlarm}>
+            <Text style={{justifyContent: 'center', color: 'red', fontSize: 15, fontWeight: 'bold'}}>Apagar alarme</Text>
+          </TouchableOpacity>
+        </View>
 
     {show && (
         <DateTimePicker
@@ -81,11 +116,12 @@ const styles = StyleSheet.create ({
         fontWeight: 'bold'
     },
     text: {
-        marginTop: 10,
-        fontSize: 20,
-        color: 'white',
-        textAlign: 'center'
-      },  
+      justifyContent: 'flex-start',
+      fontSize: 18,
+      color: 'black',
+      fontWeight: 'bold',
+      marginRight: 5
+    },  
     alarme: {
         fontSize: 100,
         marginTop: 20,
@@ -96,12 +132,24 @@ const styles = StyleSheet.create ({
         width: 150,
         height: 50,
         backgroundColor: '#000000',
-        marginTop: 0,
+        marginBottom: 30,
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth:2,
         borderColor: '#000000'
+    },
+    ApagarAlarme: {
+      width: 150,
+      height: 50,
+      backgroundColor: '#F5F5F5',
+      marginTop: 10,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth:1,
+      borderColor: '#fff',
+      marginRight: 5
     },
     EditarHoraTexto: {
         fontSize: 16,
@@ -109,10 +157,23 @@ const styles = StyleSheet.create ({
         color: '#fff'
     },
     TextInput: {
-        alignItems: 'flex-start',
-        marginTop: 10,
-        color: 'black',
-        fontSize: 20,
+      justifyContent: 'flex-end',
+      fontSize: 18,
+      fontWeight: 'bold'
+    },
+    opcoes: {
+      flexDirection:"row",
+      alignItems: 'center',
+      padding: 10, 
+
+    },
+    fundo: {
+      backgroundColor: '#F5F5F5', 
+      borderRadius: 10, 
+      marginTop: 1,
+      borderWidth: 1,
+      borderColor: 'white',
+      width: '90%'
     }
 })
 
