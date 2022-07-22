@@ -37,7 +37,7 @@ const onChange = (event, selectedDate) => {
     vibrate: true,
     play_sound: true,
     schedule_type: 'once',
-    channel: 'wakeup',
+    channel: moment(selectedDate).format('DD-MM-YYYY HH:mm:ss'),
     data: {content: 'my notification id is 22'},
     loop_sound: true,
     has_button: true,
@@ -66,6 +66,21 @@ function NewAlarm() {
 const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
+const uniqueIds = [];
+
+  const uniqueEmployees = list.filter(element => {
+    const isDuplicate = uniqueIds.includes(element.channel);
+
+    if (!isDuplicate) {
+      uniqueIds.push(element.channel);
+
+      return true;
+    }
+
+    return false;
+  });
+
+
   return (
     <Provider>
       <Portal>
@@ -84,6 +99,11 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
               label: 'Novo Alarme',
               onPress: showMode,
             },
+            {
+              icon: '',
+              label: 'teste',
+              onPress: () => console.log(uniqueEmployees),
+            },
           ]}
           onStateChange={onStateChange}
         />
@@ -99,7 +119,7 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
         />
       )}
 
-    {list[0] == undefined
+    {uniqueEmployees[0] == undefined
     ?
     <View style={styles.container}>
       <View style={styles.header}>
@@ -118,7 +138,7 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
       </View>
         <Text style={{marginTop: 10, marginLeft: 10, marginBottom: 10, fontSize: 20, color: 'black'}}>Alarmes</Text>
       <ScrollView>
-      {list.map((dev) => {
+      {uniqueEmployees.map((dev) => {
             return (
                   <View style={styles.Tasks} key={dev.id}>
                       <Text style={styles.TitleAlarm} >
@@ -127,7 +147,7 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
                     <Text style={styles.DateAlarm}>
                       {`${dev.day}/${dev.month}/${dev.year} | ${dev.title}`}
                     </Text>
-                    <TouchableOpacity onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, intervalo: dev.interval}) }}>
+                    <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel}) }}>
                       <Icon 
                       name="edit"
                       type="Feather"
@@ -147,6 +167,7 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 };
 
 const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -176,12 +197,18 @@ const styles = StyleSheet.create({
   },
   DateAlarm:{
     fontSize: 15,
-    alignContent:"flex-start",
+    alignContent: 'flex-start',
     color:"black",
-    marginBottom: -45,
+    marginBottom: 10,
     marginRight:0,
-    marginLeft: -300,
-    padding: 60,
+    marginLeft: -100,
+    paddingTop: 60,
+   },
+   edit:{
+    justifyContent: 'flex-start',
+    alignContent: 'space-between',
+    paddingHorizontal: 150,
+    marginLeft: 0,
    },
   TitleAlarm:{
     fontSize: 40,
@@ -193,14 +220,13 @@ const styles = StyleSheet.create({
     color:"black",
    },
    Tasks:{
-    paddingLeft: 10, 
+    paddingLeft: 10,
+    paddingRight: -20, 
     backgroundColor: '#F5F5F5', 
     borderRadius: 10, 
     marginBottom: 5,
-    width:"100%",
     flexDirection:"row",
-    justifyContent:"space-between",
-    marginTop:5
+    marginTop: 5
    },
   header: {
     width: '100%',
