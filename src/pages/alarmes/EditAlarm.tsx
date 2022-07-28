@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import ReactNativeAN from 'react-native-alarm-notification';
 import 'react-native-vector-icons'
+import { useFocusEffect } from '@react-navigation/native';
 
 const EditAlarm = (props, {navigation}) => {
 
@@ -16,6 +17,7 @@ const mes = props.route.params.mes
 const ano = props.route.params.ano
 const titulo = props.route.params.titulo
 const mensagem = props.route.params.mensagem
+const semana = props.route.params.semana
 
 const dayjs = require('dayjs')
 var weekday = require('dayjs/plugin/weekday')
@@ -30,6 +32,52 @@ const [pressQua, setPressQua] = useState(false)
 const [pressQui, setPressQui] = useState(false)
 const [pressSex, setPressSex] = useState(false)
 const [pressSab, setPressSab] = useState(false)
+
+var dataSemana = '';
+
+const [list, setList] = useState([]);
+
+const update = async() => {
+  const l = await ReactNativeAN.getScheduledAlarms();
+  setList(l)
+}
+
+useFocusEffect(
+  React.useCallback(() => {
+  update()
+  
+  if (semana.indexOf('Dom') >= 0) {
+    setPressDom(true)
+  }
+  if (semana.indexOf('Seg') >= 0) {
+    setPressSeg(true)
+  }
+  if (semana.indexOf('Ter') >= 0) {
+    setPressTer(true)
+  }
+  if (semana.indexOf('Qua') >= 0) {
+    setPressQua(true)
+  }
+  if (semana.indexOf('Qui') >= 0) {
+    setPressQui(true)
+  }
+  if (semana.indexOf('Sex') >= 0) {
+    setPressSex(true)
+  }
+  if (semana.indexOf('Sab') >= 0) {
+    setPressSab(true)
+  }
+  }, []),
+);
+
+const teste = async() => {
+  /*const [teste, setTeste] = useState('segunda terca quarta quinta sexta sabado')
+  if (teste.indexOf('segunda') >= 0) {
+    console.log('consegui')
+  } else {
+    console.log('não consegui')
+  }*/
+}
 
 /*--------------*/
 
@@ -61,12 +109,40 @@ const showMode = () => {
 };
 
 const DeleteAlarm = () => {
-  ReactNativeAN.deleteAlarm(id);
-  ReactNativeAN.deleteRepeatingAlarm(id);
+  const searchId = list.filter(dev => {
+    return dev.channel === canal;
+  })
+  searchId.map((dev) => {
+    ReactNativeAN.deleteAlarm(dev.id);
+    ReactNativeAN.deleteRepeatingAlarm(dev.id);
+  })
   props.navigation.navigate('Alarme')
 }
 
 const AlterarAlarm = () => {
+
+  if (pressDom == true) {
+    dataSemana = dataSemana + '|Dom'
+  } 
+  if (pressSeg == true) {
+    dataSemana = dataSemana + '|Seg'
+  }
+  if (pressTer == true) {
+    dataSemana = dataSemana + '|Ter'
+  }
+  if (pressQua == true) {
+    dataSemana = dataSemana + '|Qua'
+  }
+  if (pressQui == true) {
+    dataSemana = dataSemana + '|Qui'
+  }
+  if (pressSex == true) {
+    dataSemana = dataSemana + '|Sex'
+  }
+  if (pressSab == true) {
+    dataSemana = dataSemana + '|Sab'
+  }
+
   if (pressDom == false && pressSeg == false && pressTer == false && pressQua == false && pressQui == false && pressSex == false && pressSab == false) {
     ReactNativeAN.deleteAlarm(id);
     ReactNativeAN.deleteRepeatingAlarm(id);
@@ -77,7 +153,7 @@ const AlterarAlarm = () => {
       play_sound: true,
       schedule_type: 'once',
       channel: id,
-      data: {content: 'my notification id is 22'},
+      ticker: 'Hoje',
       loop_sound: true,
       has_button: true,
       fire_date: horaEdit
@@ -89,20 +165,26 @@ const AlterarAlarm = () => {
     ReactNativeAN.deleteAlarm(id);
     ReactNativeAN.deleteRepeatingAlarm(id);
     if (pressDom == true) {
+      const searchId = list.filter(dev => {
+        return dev.channel === canal;
+      })
+      searchId.map((dev) => {
+        ReactNativeAN.deleteAlarm(dev.id);
+        ReactNativeAN.deleteRepeatingAlarm(dev.id);
+      })
       if (hoje > Domingo) {
         const DomingoUpdate = moment().add(1, 'weeks').isoWeekday(0).format('DD-MM-YYYY')
+
         const alarmNotifData = {
           title: title,
           message: mensage,
           vibrate: true,
           play_sound: true,
           channel: `repeat ${id}`,
-          data: {content: 'my notification id is 22'},
+          ticker: dataSemana,
           loop_sound: true,
-          has_button: true,
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
-          interval_value: 0,
           fire_date: `${DomingoUpdate} ${hour}:00`
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -115,12 +197,10 @@ const AlterarAlarm = () => {
           vibrate: true,
           play_sound: true,
           channel: `repeat ${id}`,
-          data: {content: 'my notification id is 22'},
+          ticker: dataSemana,
           loop_sound: true,
-          has_button: true,
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
-          interval_value: 0,
           fire_date: `${Domingo}`
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -136,12 +216,10 @@ const AlterarAlarm = () => {
             vibrate: true,
             play_sound: true,
             channel: `repeat ${id}`,
-            data: {content: 'my notification id is 22'},
+            ticker: dataSemana,
             loop_sound: true,
-            has_button: true,
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
-            interval_value: 0,
             fire_date: `${SegundaUpdate} ${hour}:00`
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -154,12 +232,10 @@ const AlterarAlarm = () => {
             vibrate: true,
             play_sound: true,
             channel: `repeat ${id}`,
-            data: {content: 'my notification id is 22'},
+            ticker: dataSemana,
             loop_sound: true,
-            has_button: true,
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
-            interval_value: 0,
             fire_date: `${Segunda}`
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -175,12 +251,10 @@ const AlterarAlarm = () => {
               vibrate: true,
               play_sound: true,
               channel: `repeat ${id}`,
-              data: {content: 'my notification id is 22'},
+              ticker: dataSemana,
               loop_sound: true,
-              has_button: true,
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
-              interval_value: 0,
               fire_date: `${TercaUpdate} ${hour}:00`
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -193,12 +267,10 @@ const AlterarAlarm = () => {
               vibrate: true,
               play_sound: true,
               channel: `repeat ${id}`,
-              data: {content: 'my notification id is 22'},
+              ticker: dataSemana,
               loop_sound: true,
-              has_button: true,
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
-              interval_value: 0,
               fire_date: `${Terca}`
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -214,12 +286,10 @@ const AlterarAlarm = () => {
                 vibrate: true,
                 play_sound: true,
                 channel: `repeat ${id}`,
-                data: {content: 'my notification id is 22'},
+                ticker: dataSemana,
                 loop_sound: true,
-                has_button: true,
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
-                interval_value: 0,
                 fire_date: `${QuartaUpdate} ${hour}:00`
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -232,12 +302,10 @@ const AlterarAlarm = () => {
                 vibrate: true,
                 play_sound: true,
                 channel: `repeat ${id}`,
-                data: {content: 'my notification id is 22'},
+                ticker: dataSemana,
                 loop_sound: true,
-                has_button: true,
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
-                interval_value: 0,
                 fire_date: `${Quarta}`
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -253,12 +321,10 @@ const AlterarAlarm = () => {
                   vibrate: true,
                   play_sound: true,
                   channel: `repeat ${id}`,
-                  data: {content: 'my notification id is 22'},
+                  ticker: dataSemana,
                   loop_sound: true,
-                  has_button: true,
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
-                  interval_value: 0,
                   fire_date: `${QuintaUpdate} ${hour}:00`
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -271,12 +337,10 @@ const AlterarAlarm = () => {
                   vibrate: true,
                   play_sound: true,
                   channel: `repeat ${id}`,
-                  data: {content: 'my notification id is 22'},
+                  ticker: dataSemana,
                   loop_sound: true,
-                  has_button: true,
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
-                  interval_value: 0,
                   fire_date: `${Quinta}`
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -292,12 +356,10 @@ const AlterarAlarm = () => {
                     vibrate: true,
                     play_sound: true,
                     channel: `repeat ${id}`,
-                    data: {content: 'my notification id is 22'},
+                    ticker: dataSemana,
                     loop_sound: true,
-                    has_button: true,
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
-                    interval_value: 0,
                     fire_date: `${SextaUpdate} ${hour}:00`
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -310,12 +372,10 @@ const AlterarAlarm = () => {
                     vibrate: true,
                     play_sound: true,
                     channel: `repeat ${id}`,
-                    data: {content: 'my notification id is 22'},
+                    ticker: dataSemana,
                     loop_sound: true,
-                    has_button: true,
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
-                    interval_value: 0,
                     fire_date: `${Sexta}`
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -331,12 +391,10 @@ const AlterarAlarm = () => {
                       vibrate: true,
                       play_sound: true,
                       channel: `repeat ${id}`,
-                      data: {content: 'my notification id is 22'},
+                      ticker: dataSemana,
                       loop_sound: true,
-                      has_button: true,
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
-                      interval_value: 0,
                       fire_date: `${SabadoUpdate} ${hour}:00`
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -349,12 +407,10 @@ const AlterarAlarm = () => {
                       vibrate: true,
                       play_sound: true,
                       channel: `repeat ${id}`,
-                      data: {content: 'my notification id is 22'},
+                      ticker: dataSemana,
                       loop_sound: true,
-                      has_button: true,
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
-                      interval_value: 0,
                       fire_date: `${Sabado}`
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
@@ -466,9 +522,6 @@ const AlterarAlarm = () => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.ApagarAlarme} onPress={DeleteAlarm}>
             <Text style={{justifyContent: 'center', color: 'red', fontSize: 15, fontWeight: 'bold'}}>Apagar alarme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.ApagarAlarme} onPress={() => console.log(`${hoje}  ${Sexta}`)}>
-            <Text style={{justifyContent: 'center', color: 'red', fontSize: 15, fontWeight: 'bold'}}>teste</Text>
           </TouchableOpacity>
         </View>
 
@@ -604,3 +657,7 @@ const styles = StyleSheet.create ({
 })
 
 export default EditAlarm;
+
+function useSetState(arg0: string): [any, any, any] {
+  throw new Error('Function not implemented.');
+}

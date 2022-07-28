@@ -38,7 +38,7 @@ const onChange = (event, selectedDate) => {
     play_sound: true,
     schedule_type: 'once',
     channel: moment(selectedDate).format('DD-MM-YYYY HH:mm:ss'),
-    data: {content: 'my notification id is 22'},
+    ticker: 'Hoje',
     loop_sound: true,
     has_button: true,
     fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:ss')
@@ -80,6 +80,8 @@ const uniqueIds = [];
     return false;
   });
 
+  /*var PrinData = `${list[0].data}`
+  var PrinDta = PrinData.substring(10)*/
 
   return (
     <Provider>
@@ -98,11 +100,6 @@ const uniqueIds = [];
               icon: '',
               label: 'Novo Alarme',
               onPress: showMode,
-            },
-            {
-              icon: '',
-              label: 'teste',
-              onPress: () => console.log(uniqueEmployees),
             },
           ]}
           onStateChange={onStateChange}
@@ -134,20 +131,18 @@ const uniqueIds = [];
       <View style={styles.header}>
         <Text style={styles.text}>Próximo Alarme</Text>
         <Text style={styles.alarme}>{`${list[0].hour}:${list[0].minute}`}</Text>
-        <Text style={styles.data}>{`${list[0].day}/${list[0].month}/${list[0].year} | ${list[0].title}`}</Text>
+        <Text style={styles.data}>{`${list[0].ticker} | ${list[0].title}`}</Text>
       </View>
         <Text style={{marginTop: 10, marginLeft: 10, marginBottom: 10, fontSize: 20, color: 'black'}}>Alarmes</Text>
       <ScrollView>
       {uniqueEmployees.map((dev) => {
             return (
                   <View style={styles.Tasks} key={dev.id}>
+                    <View style={styles.containerCollapse}>
                       <Text style={styles.TitleAlarm} >
                         {`${dev.hour}:${dev.minute}`}
                       </Text>
-                    <Text style={styles.DateAlarm}>
-                      {`${dev.day}/${dev.month}/${dev.year} | ${dev.title}`}
-                    </Text>
-                    <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel}) }}>
+                      <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel, semana: dev.ticker}) }}>
                       <Icon 
                       name="edit"
                       type="Feather"
@@ -155,11 +150,15 @@ const uniqueIds = [];
                       style={styles.IconEdit}
                       />
                     </TouchableOpacity>
+                    </View>
+                    <Text style={styles.DateAlarm}>
+                      {`${dev.ticker} | ${dev.title}`}
+                    </Text>
                   </View>
             )}
       )}
       </ScrollView>
-        </View>
+      </View>
       }
 
     </Provider>
@@ -174,12 +173,11 @@ const styles = StyleSheet.create({
   },
   containerCollapse: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    textAlign: 'center'
+    flexDirection: 'row',
   },
   IconEdit: {
-    marginRight: 15,
-    marginTop: 30
+    marginRight: 0,
+    marginTop: 0
   },
   textCollapse: {
     marginTop: 10,
@@ -196,37 +194,27 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   DateAlarm:{
+    flexDirection: 'column',
     fontSize: 15,
-    alignContent: 'flex-start',
     color:"black",
     marginBottom: 10,
     marginRight:0,
-    marginLeft: -100,
-    paddingTop: 60,
    },
    edit:{
-    justifyContent: 'flex-start',
-    alignContent: 'space-between',
-    paddingHorizontal: 150,
-    marginLeft: 0,
+     width: '100%',
+     alignSelf: 'flex-end',
+     justifyContent: 'flex-end',
+     marginLeft: 60,
    },
   TitleAlarm:{
+    flexDirection: 'column',
     fontSize: 40,
-    alignContent:"flex-start",
-    padding: 8,
-    paddingHorizontal: 0,
-    marginBottom: -10,
-    marginRight:0,
     color:"black",
    },
    Tasks:{
-    paddingLeft: 10,
-    paddingRight: -20, 
-    backgroundColor: '#F5F5F5', 
-    borderRadius: 10, 
     marginBottom: 5,
-    flexDirection:"row",
-    marginTop: 5
+    paddingLeft: 10,
+    backgroundColor: '#F5F5F5', 
    },
   header: {
     width: '100%',
