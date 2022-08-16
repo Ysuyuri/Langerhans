@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React, { useState, Fragment, useCallback, useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FAB, Portal, Provider } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, CalendarProps } from 'react-native-calendars';
 
 const INITIAL_DATE = new Date().toLocaleString() + '';
@@ -26,6 +27,19 @@ const Calendario = () => {
     };
   }, [selected]);
 
+  const [date, setDate] = useState(new Date(Date.now()));
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    setShow(false);
+    setDate(new Date(Date.now()));
+    console.log(selectedDate)
+  };
+
+  const showMode = () => {
+    setShow(true);
+  };
+
   return (
     <Provider>
     <View>
@@ -46,13 +60,22 @@ const Calendario = () => {
           actions={[
             {
               icon: '',
-              label: 'Teste',
-              onPress: () => console.log('oi'),
+              label: 'Novo Alarme',
+              onPress: showMode,
             },
           ]}
           onStateChange={onStateChange}
         />
       </Portal>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode='date'
+          is24Hour={true}
+          onChange={onChange}
+        />
+        )}
     </View>
     </Provider>
   );
