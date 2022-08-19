@@ -42,6 +42,12 @@ const update = async() => {
   setList(l)
 }
 
+function padLeadingZeros(num, size) {
+  var s = num+"";
+  while (s.length < size) s = "0" + s;
+  return s;
+}
+
 useFocusEffect(
   React.useCallback(() => {
   update()
@@ -69,15 +75,6 @@ useFocusEffect(
   }
   }, []),
 );
-
-const teste = async() => {
-  /*const [teste, setTeste] = useState('segunda terca quarta quinta sexta sabado')
-  if (teste.indexOf('segunda') >= 0) {
-    console.log('consegui')
-  } else {
-    console.log('não consegui')
-  }*/
-}
 
 /*--------------*/
 

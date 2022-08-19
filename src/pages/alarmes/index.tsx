@@ -59,6 +59,12 @@ useFocusEffect(
   }, []),
 );
 
+function padLeadingZeros(num, size) {
+  var s = num+"";
+  while (s.length < size) s = "0" + s;
+  return s;
+}
+
 function NewAlarm() {
   props.navigation.navigate('CreateAlarm');
 }
@@ -79,6 +85,10 @@ const uniqueIds = [];
 
     return false;
   });
+
+  const uniqueEmployees2 = list.filter(dev => {
+    return dev.ticker !== 'Calendario'
+  })
 
   /*var PrinData = `${list[0].data}`
   var PrinDta = PrinData.substring(10)*/
@@ -116,7 +126,7 @@ const uniqueIds = [];
         />
       )}
 
-    {uniqueEmployees[0] == undefined
+    {uniqueEmployees2[0] == undefined
     ?
     <View style={styles.container}>
       <View style={styles.header}>
@@ -130,17 +140,17 @@ const uniqueIds = [];
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.text}>Próximo Alarme</Text>
-        <Text style={styles.alarme}>{`${list[0].hour}:${list[0].minute}`}</Text>
-        <Text style={styles.data}>{`${list[0].ticker} | ${list[0].title}`}</Text>
+        <Text style={styles.alarme}>{`${padLeadingZeros(uniqueEmployees2[0].hour, 2)}:${padLeadingZeros(uniqueEmployees2[0].minute, 2)}`}</Text>
+        <Text style={styles.data}>{`${padLeadingZeros(uniqueEmployees2[0].ticker, 2)} | ${padLeadingZeros(uniqueEmployees2[0].title, 2)}`}</Text>
       </View>
         <Text style={{marginTop: 10, marginLeft: 10, marginBottom: 10, fontSize: 20, color: 'black'}}>Alarmes</Text>
       <ScrollView>
-      {uniqueEmployees.map((dev) => {
+      {uniqueEmployees2.map((dev) => {
             return (
                   <View style={styles.Tasks} key={dev.id}>
                     <View style={styles.containerCollapse}>
                       <Text style={styles.TitleAlarm} >
-                        {`${dev.hour}:${dev.minute}`}
+                        {`${padLeadingZeros(dev.hour, 2)}:${padLeadingZeros(dev.minute, 2)}`}
                       </Text>
                       <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel, semana: dev.ticker}) }}>
                       <Icon 
