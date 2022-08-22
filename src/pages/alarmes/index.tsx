@@ -37,11 +37,11 @@ const onChange = (event, selectedDate) => {
     vibrate: true,
     play_sound: true,
     schedule_type: 'once',
-    channel: moment(selectedDate).format('DD-MM-YYYY HH:mm:ss'),
+    channel: moment(selectedDate).format('HHmm'),
     ticker: 'Hoje',
     loop_sound: true,
     has_button: true,
-    fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:ss')
+    fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:00')
   }
   ReactNativeAN.scheduleAlarm(alarmNotifData)
   updateList()

@@ -80,10 +80,10 @@ useFocusEffect(
 
 const [date, setDate] = useState(new Date(Date.now()));
 const [show, setShow] = useState(false);
-const [hour, setHour] = useState(`${hora}:${minuto}`)
+const [hour, setHour] = useState(`${padLeadingZeros(hora, 2)}:${padLeadingZeros(minuto, 2)}`)
 const [title, setTitle] = useState(titulo);
 const [mensage, setMensage] = useState(mensagem);
-const [horaEdit, setHoraEdit] = useState(`${dia}-${mes}-${ano} ${hora}:${minuto}:00`)
+const [horaEdit, setHoraEdit] = useState(`${dia}-${mes}-${ano} ${padLeadingZeros(hora, 2)}:${padLeadingZeros(minuto, 2)}:00`)
 
 const hoje = `${moment(dayjs().toString()).format('DD-MM-YYYY HH:mm:ss')}`
 const Domingo = `${moment(dayjs().day(0).toString()).format('DD-MM-YYYY')} ${hour}:00`
@@ -177,7 +177,7 @@ const AlterarAlarm = () => {
           message: mensage,
           vibrate: true,
           play_sound: true,
-          channel: `repeat ${id}`,
+          channel: `${hour} repeat`,
           ticker: dataSemana,
           loop_sound: true,
           schedule_type: 'repeat',
@@ -193,7 +193,7 @@ const AlterarAlarm = () => {
           message: mensage,
           vibrate: true,
           play_sound: true,
-          channel: `repeat ${id}`,
+          channel: `${moment(Domingo).format('HHmm')} repeat`,
           ticker: dataSemana,
           loop_sound: true,
           schedule_type: 'repeat',
@@ -212,7 +212,7 @@ const AlterarAlarm = () => {
             message: mensage,
             vibrate: true,
             play_sound: true,
-            channel: `repeat ${id}`,
+            channel: `${hour} repeat`,
             ticker: dataSemana,
             loop_sound: true,
             schedule_type: 'repeat',
@@ -228,7 +228,7 @@ const AlterarAlarm = () => {
             message: mensage,
             vibrate: true,
             play_sound: true,
-            channel: `repeat ${id}`,
+            channel: `${moment(Segunda).format('HHmm')} repeat`,
             ticker: dataSemana,
             loop_sound: true,
             schedule_type: 'repeat',
@@ -247,7 +247,7 @@ const AlterarAlarm = () => {
               message: mensage,
               vibrate: true,
               play_sound: true,
-              channel: `repeat ${id}`,
+              channel: `${hour} repeat`,
               ticker: dataSemana,
               loop_sound: true,
               schedule_type: 'repeat',
@@ -263,7 +263,7 @@ const AlterarAlarm = () => {
               message: mensage,
               vibrate: true,
               play_sound: true,
-              channel: `repeat ${id}`,
+              channel: `${moment(Terca).format('HHmm')} repeat`,
               ticker: dataSemana,
               loop_sound: true,
               schedule_type: 'repeat',
@@ -282,7 +282,7 @@ const AlterarAlarm = () => {
                 message: mensage,
                 vibrate: true,
                 play_sound: true,
-                channel: `repeat ${id}`,
+                channel: `${hour} repeat`,
                 ticker: dataSemana,
                 loop_sound: true,
                 schedule_type: 'repeat',
@@ -298,7 +298,7 @@ const AlterarAlarm = () => {
                 message: mensage,
                 vibrate: true,
                 play_sound: true,
-                channel: `repeat ${id}`,
+                channel: `${moment(Quarta).format('HHmm')} repeat`,
                 ticker: dataSemana,
                 loop_sound: true,
                 schedule_type: 'repeat',
@@ -317,7 +317,7 @@ const AlterarAlarm = () => {
                   message: mensage,
                   vibrate: true,
                   play_sound: true,
-                  channel: `repeat ${id}`,
+                  channel: `${hour} repeat`,
                   ticker: dataSemana,
                   loop_sound: true,
                   schedule_type: 'repeat',
@@ -333,7 +333,7 @@ const AlterarAlarm = () => {
                   message: mensage,
                   vibrate: true,
                   play_sound: true,
-                  channel: `repeat ${id}`,
+                  channel: `${moment(Quinta).format('HHmm')} repeat`,
                   ticker: dataSemana,
                   loop_sound: true,
                   schedule_type: 'repeat',
@@ -352,7 +352,7 @@ const AlterarAlarm = () => {
                     message: mensage,
                     vibrate: true,
                     play_sound: true,
-                    channel: `repeat ${id}`,
+                    channel: `${hour} repeat`,
                     ticker: dataSemana,
                     loop_sound: true,
                     schedule_type: 'repeat',
@@ -368,7 +368,7 @@ const AlterarAlarm = () => {
                     message: mensage,
                     vibrate: true,
                     play_sound: true,
-                    channel: `repeat ${id}`,
+                    channel: `${moment(Sexta).format('HHmm')} repeat`,
                     ticker: dataSemana,
                     loop_sound: true,
                     schedule_type: 'repeat',
@@ -387,7 +387,7 @@ const AlterarAlarm = () => {
                       message: mensage,
                       vibrate: true,
                       play_sound: true,
-                      channel: `repeat ${id}`,
+                      channel: `${hour} repeat`,
                       ticker: dataSemana,
                       loop_sound: true,
                       schedule_type: 'repeat',
@@ -403,7 +403,7 @@ const AlterarAlarm = () => {
                       message: mensage,
                       vibrate: true,
                       play_sound: true,
-                      channel: `repeat ${id}`,
+                      channel: `${moment(Sabado).format('HHmm')} repeat`,
                       ticker: dataSemana,
                       loop_sound: true,
                       schedule_type: 'repeat',
