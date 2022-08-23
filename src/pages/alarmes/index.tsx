@@ -86,12 +86,11 @@ const uniqueIds = [];
     return false;
   });
 
-  const uniqueEmployees2 = list.filter(dev => {
+  const uniqueEmployees2 = uniqueEmployees.filter(dev => {
     return dev.ticker !== 'Calendario'
   })
 
-  /*var PrinData = `${list[0].data}`
-  var PrinDta = PrinData.substring(10)*/
+  uniqueEmployees2.sort((a, b) => (a.channel > b.channel) ? 1 : -1)
 
   return (
     <Provider>
