@@ -40,7 +40,7 @@ const Calendario = () => {
         selectedColor: '#4EAFC6',
         selectedTextColor: 'white'
       },
-      /*['2022-08-23']: {
+      /*['2022-08-23 USAR MAP']: {
         dotColor: 'black',
         marked: true
       }*/
