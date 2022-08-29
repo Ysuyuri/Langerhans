@@ -141,8 +141,13 @@ const AlterarAlarm = () => {
   }
 
   if (pressDom == false && pressSeg == false && pressTer == false && pressQua == false && pressQui == false && pressSex == false && pressSab == false) {
-    ReactNativeAN.deleteAlarm(id);
-    ReactNativeAN.deleteRepeatingAlarm(id);
+    const searchId = list.filter(dev => {
+      return dev.channel === canal;
+    })
+    searchId.map((dev) => {
+      ReactNativeAN.deleteAlarm(dev.id);
+      ReactNativeAN.deleteRepeatingAlarm(dev.id);
+    })
     const alarmNotifData = {
       title: title,
       message: 'Stand up',
