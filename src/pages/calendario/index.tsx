@@ -11,7 +11,13 @@ import { Icon } from '@rneui/themed';
 
 const INITIAL_DATE = new Date().toLocaleString() + '';
 
-const Calendario = () => {
+const Calendario = (props, {navigation}) => {
+  function padLeadingZeros(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+  }
+
   const [selected, setSelected] = useState(INITIAL_DATE);
   const [state, setState] = React.useState({ open: false });
   const onStateChange = ({ open }) => setState({ open });
@@ -32,6 +38,15 @@ const Calendario = () => {
     }, []),
   );
 
+  const mark = () => {
+    list.map ((dev) => {
+      const _data = `${padLeadingZeros(dev.year, 4)}-${padLeadingZeros(dev.month, 2)}-${padLeadingZeros(dev.day, 2)}`
+      return {
+        _data
+      }
+    })
+  }
+
   const marked = useMemo(() => {
     return {
       [selected]: {
@@ -40,10 +55,10 @@ const Calendario = () => {
         selectedColor: '#4EAFC6',
         selectedTextColor: 'white'
       },
-      /*['2022-08-23 USAR MAP']: {
+      '2022-09-15': {
         dotColor: 'black',
         marked: true
-      }*/
+      }
     };
   }, [selected]);
 
@@ -74,12 +89,6 @@ const Calendario = () => {
     hideDateTimePicker();
     update();
   };
-
-  function padLeadingZeros(num, size) {
-    var s = num+"";
-    while (s.length < size) s = "0" + s;
-    return s;
-  }
 
   const [dayString, setDay] = useState('');
 
@@ -117,7 +126,7 @@ const Calendario = () => {
                       <Text style={styles.TitleAlarm} >
                         {`${padLeadingZeros(dev.hour, 2)}:${padLeadingZeros(dev.minute, 2)}`}
                       </Text>
-                      <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel, semana: dev.ticker}) }}>
+                      <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Calendario', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel, semana: dev.ticker}) }}>
                       <Icon 
                       name="edit"
                       type="Feather"

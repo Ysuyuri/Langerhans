@@ -14,6 +14,7 @@ import UserConfig from '../user';
 import Calendario from '../pages/calendario';
 import ImgShow from '../pages/exames/showImage'
 import { DrawerContent } from './DrawerContent';
+import EditCalendario from '../pages/calendario/EditCalendario';
 
 import { Icon } from '@rneui/themed';
 import 'react-native-gesture-handler';
@@ -80,6 +81,7 @@ function Route({navigation}) {
           <Stack.Screen name="ImageShow" component={ImgShow} options={{headerShown: false}} />
           <Stack.Screen name="CreateAlarm" component={CriarAlarme} options={{headerShown: false}} />
           <Stack.Screen name="Editar Alarme" component={EditAlarm} options={{headerShown: true}}/>
+          <Stack.Screen name="Editar Calendario" component={EditCalendario} options={{headerShown: true}}/>
         </Stack.Navigator>
   );
 };
