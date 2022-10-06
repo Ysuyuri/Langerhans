@@ -24,6 +24,7 @@ const Calendario = (props, {navigation}) => {
   const { open } = state;
 
   const [dateCalendario, setDateCalendario] = useState([])
+  const [calendarioDia, setCalendarioDia] = useState([{data: '2022-09-06'}, {data: '2022-09-07'}, {data: '2022-09-15'}])
 
   const [list, setList] = useState([]);
 
@@ -38,29 +39,7 @@ const Calendario = (props, {navigation}) => {
     }, []),
   );
 
-  const mark = () => {
-    list.map ((dev) => {
-      const _data = `${padLeadingZeros(dev.year, 4)}-${padLeadingZeros(dev.month, 2)}-${padLeadingZeros(dev.day, 2)}`
-      return {
-        _data
-      }
-    })
-  }
 
-  const marked = useMemo(() => {
-    return {
-      [selected]: {
-        selected: true,
-        disableTouchEvent: true,
-        selectedColor: '#4EAFC6',
-        selectedTextColor: 'white'
-      },
-      '2022-09-15': {
-        dotColor: 'black',
-        marked: true
-      }
-    };
-  }, [selected]);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -88,6 +67,7 @@ const Calendario = (props, {navigation}) => {
     ReactNativeAN.scheduleAlarm(alarmNotifData)
     hideDateTimePicker();
     update();
+    setCalendarioDia([{data: moment(datetime).format('YYYY-MM-DD')}])
   };
 
   const [dayString, setDay] = useState('');
@@ -100,6 +80,26 @@ const Calendario = (props, {navigation}) => {
   const uniqueEmployees2 = 
   uniqueEmployees.filter(dev => {
     return `${padLeadingZeros(dev.year, 2)}-${padLeadingZeros(dev.month, 2)}-${padLeadingZeros(dev.day, 2)}` === dayString
+  })
+
+  let markedDay = {};
+
+  /*const marked = useMemo(() => {
+    return {
+      [selected]: {
+        selected: true,
+        disableTouchEvent: true,
+        selectedColor: '#4EAFC6',
+        selectedTextColor: 'white'
+      },
+    };
+}, [selected]);*/
+
+  uniqueEmployees.map((item) => {
+    markedDay[`${padLeadingZeros(item.year, 4)}-${padLeadingZeros(item.month, 2)}-${padLeadingZeros(item.day, 2)}`] = {
+      dotColor: 'black',
+      marked: true
+    };
   })
 
   return (
@@ -115,7 +115,7 @@ const Calendario = (props, {navigation}) => {
             setSelected(day.dateString)
             update();
           }}
-          markedDates={marked}
+          markedDates={markedDay}
         />
       </Fragment>
       <ScrollView>
