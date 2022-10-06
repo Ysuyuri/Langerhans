@@ -5,6 +5,7 @@ import { Icon } from '@rneui/themed';
 
 import firebase from '../../config/firebase';
 import { CommonActions } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 require('firebase/auth');
 
 const Login = (props, { navigation }) => {
@@ -30,7 +31,8 @@ const Login = (props, { navigation }) => {
       })
     }
 
-    useEffect(() => {
+    useFocusEffect(
+      React.useCallback(() => {
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
             props.navigation.replace('ExamesScreen');
@@ -39,7 +41,9 @@ const Login = (props, { navigation }) => {
             setIsLoading(false);
           }
         });
-    }, []);
+      }, []),
+    );
+    
 
     const TelaCadastro = () => {
       props.navigation.navigate('Cadastro')

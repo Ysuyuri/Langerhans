@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Title, Caption, Drawer, Text } from 'react-native-paper';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'firebase';
+import {useFocusEffect} from '@react-navigation/native';
 
 export function DrawerContent ({ navigation }, props) {
 
@@ -19,28 +20,30 @@ export function DrawerContent ({ navigation }, props) {
         })
     }
     
-    useEffect(() => {
-        setTimeout(() => {
-        const user = firebase.auth().currentUser;
-            if (user) {
-                setEmail(user.email);
-                setIsLoading(false)
-            } else {
-        }
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                const db = firebase.firestore();
-                const userEmail = firebase.auth().currentUser.email;
-                const docRef = db.collection("Users").doc(userEmail);
-
-                docRef.get().then((doc) => {
-                    if (doc.exists) {
-                        setName(doc.data().name);
-                    }}).catch((error) => {
-                })
-            }
-    })}, 0);
-    }, [])
+    useFocusEffect(
+        React.useCallback(() => {
+            setTimeout(() => {
+                const user = firebase.auth().currentUser;
+                    if (user) {
+                        setEmail(user.email);
+                        setIsLoading(false)
+                    } else {
+                }
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        const db = firebase.firestore();
+                        const userEmail = firebase.auth().currentUser.email;
+                        const docRef = db.collection("Users").doc(userEmail);
+        
+                        docRef.get().then((doc) => {
+                            if (doc.exists) {
+                                setName(doc.data().name);
+                            }}).catch((error) => {
+                        })
+                    }
+            })}, 0);
+        }, []),
+      );
 
     if (isLoading == true) {
         return (

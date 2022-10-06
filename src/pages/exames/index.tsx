@@ -8,6 +8,7 @@ var RNFS = require('react-native-fs')
 import firebase from 'firebase';
 
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function Exames(props) {
   const [state, setState] = React.useState({ open: false });
@@ -20,7 +21,8 @@ export default function Exames(props) {
 
   const db = firebase.firestore();
 
-  useEffect(() => {
+useFocusEffect(
+  React.useCallback(() => {
     const user = firebase.auth().currentUser;
     if (user) {
         setUid(user.uid);
@@ -33,7 +35,9 @@ export default function Exames(props) {
         })
     } else {
     }
-}, [])
+  }, []),
+);
+
 
   const AbrirCamera = () => {
     let options = {

@@ -1,44 +1,58 @@
 import { View, Text, StyleSheet,  } from 'react-native';
-import React from 'react';
-import HeaderLayout from '../HomeScreen/header';
+import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import firebase from 'firebase';
 
 const Social = () => {
+
+  const [uid, setUid] = useState('');
+  const [data, setData] = useState([])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const user = firebase.auth().currentUser;
+      if (user) {
+          setUid(user.uid);
+          firebase.firestore().collection(user.uid).onSnapshot((querySnapshot) => {
+            const items = []
+            querySnapshot.forEach((doc) => {
+              items.push(doc.data())
+            })
+            setData(items)
+          })
+      } else {
+      }
+    }, []),
+  );
+
   return (
-    <View>
-      <Text>Social</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Social</Text>  
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create ({
-  texto: {
+  container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: "#EFECF4"
   },
-  headerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#397af8',
-    marginBottom: 20,
-    width: '100%',
-    paddingVertical: 15,
-  },
-  heading: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  headerRight: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: 5,
-  },
-  subheaderText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  header: {
+    paddingTop: 14,
+    paddingBottom: 16,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#EBECF4",
+    shadowColor: "#454D65",
+    shadowOffset:  {width: 0, height: 5},
+    shadowRadius: 15,
+    shadowOpacity: 0.2,
+    zIndex: 10
+  }
 })
 
 export default Social;

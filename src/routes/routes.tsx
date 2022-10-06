@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { CommonActions, DrawerActions } from '@react-navigation/native';
+import { DrawerActions } from '@react-navigation/native';
 import { View } from 'react-native';
 
 import Login from '../pages/Login';
