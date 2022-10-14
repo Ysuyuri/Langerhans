@@ -37,10 +37,10 @@ function Tabs(){
   return(
     <Tab.Navigator screenOptions={{headerShown: false}}>
       <Tab.Screen name="Exames" component={Exames} options={{tabBarIcon: () => (
-        <Icon name="description" size={30} color="black"/>
+        <Icon name="description" size={30} color="black" color="black"/>
       )}} />
       <Tab.Screen name="Alarme" component={Alarme} options={{tabBarIcon: () => (
-        <Icon name="clock" type="entypo" size={30}  color="black"/>
+        <Icon name="clock" type="entypo" size={30} color="black"/>
       )}} />
       <Tab.Screen name="Calendário" component={Calendario} options={{tabBarIcon: () => (
         <Icon name="calendar" type="entypo" size={30} color="black"/>
