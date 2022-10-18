@@ -1,16 +1,27 @@
-import { View, Text, StyleSheet, TouchableOpacity, SegmentedControlIOSComponent,  } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SegmentedControlIOSComponent, Alert,  } from 'react-native';
 import React, { useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import firebase from 'firebase';
 import { Icon } from '@rneui/themed';
-import uuid from 'react-native-uuid';
+import { v4 as uuid } from 'uuid'
+import 'react-native-get-random-values';
+
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import moment from 'moment';
 
 const Social = () => {
 
+  const db = firebase.firestore();
+  const dayjs = require('dayjs')
+
+  const hoje = `${moment(dayjs().toString()).format('DD/MM/YYYY HH:mm')}`
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [uid, setUid] = useState('');
   const [data, setData] = useState([])
+  const [post, setPost] = useState("")
+  const [genUuid, setgenUuid] = useState("")
+  const [comment, setComment] = useState("")
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,40 +55,85 @@ const Social = () => {
     }, []),
   );
 
-  function Teste() {
-    console.log(uuid.v4())
+  const SendPost = () => {
+     if (!post) {
+      Alert.alert("Nenhum pensamento foi inserido.")
+     } else {
+      const gennerate: string = uuid();
+      db.collection("Posts").doc(gennerate).set({
+        DataPost: hoje,
+        Nome: name,
+        Post: post,
+        uid: uid,
+    })
+    .catch((error) => {
+        console.error("Error writing document: ", error);
+    });
+    }
+    setPost("")
   }
+
+  const sendComment = () => {
+    console.log(comment)
+  }
+
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Social</Text>  
+      <View style={styles.postSubmite}>
+      <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
+        <TextInput 
+        multiline={true} 
+        numberOfLines={4} 
+        style={{ flex: 1 }}
+        placeholder="No que você está pensando?"
+        value={post}
+        onChangeText={(value) => setPost(value)}>
+        </TextInput>
+      <TouchableOpacity style={styles.submite} onPress={SendPost}>
+        <Icon name="send" type="Feather" color="#73788B"/>
+      </TouchableOpacity>
       </View>
+      <ScrollView>
       <View style={styles.feed}>
       {data.map((dev) => {
           return(
-              <View style={styles.feedItem} key={dev.uid}>
+              <View style={styles.feedItem} key={dev.DataPost}>
+                <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <View>
                       <Text style={styles.name}>{dev.Nome}</Text>
                       <Text style={styles.timestamp}>{dev.DataPost}</Text>
                     </View>
-
                     <Icon name="more-horiz" type="MaterialIcons" color="#73788B"/>
                   </View>
                   <Text style={styles.post}>{dev.Post}</Text>
                   <View style={{ flexDirection: "row" }}>
-                    <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }} />
+                    <TouchableOpacity>
+                      <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.postSubmite}>
+                    <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
+                      <TextInput 
+                      multiline={true} 
+                      numberOfLines={4} 
+                      style={{ flex: 1 }}
+                      placeholder="Escreva um comentário!"
+                      value={comment}
+                      onChangeText={handleChange}>
+                      </TextInput>
+                    <TouchableOpacity style={styles.submite} onPress={sendComment}>
+                      <Icon name="send" type="Feather" color="#73788B"/>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
           )
         })}
       </View>
-        <TouchableOpacity onPress={Teste}> 
-            <Text>Concluir Cadastro</Text>          
-        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
@@ -86,6 +142,17 @@ const styles = StyleSheet.create ({
   container: {
     flex: 1,
     backgroundColor: "#EFECF4"
+  },
+  postSubmite: {
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    flexDirection: "row", 
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  submite: {
+    alignItems: "flex-end",
+    marginHorizontal: 32
   },
   header: {
     paddingTop: 14,
@@ -115,6 +182,12 @@ const styles = StyleSheet.create ({
     flexDirection: "row",
     marginVertical: 8
   },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 16,
+  },
   name: {
     fontSize: 15,
     fontWeight: "500",
@@ -129,7 +202,7 @@ const styles = StyleSheet.create ({
     marginTop: 16,
     fontSize: 14,
     color: "#838899"
-  }
+  },
 })
 
 export default Social;
