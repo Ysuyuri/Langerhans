@@ -87,7 +87,7 @@ const Social = (props) => {
       <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
         <TextInput 
         multiline={true} 
-        numberOfLines={4} 
+        numberOfLines={3} 
         style={{ flex: 1 }}
         placeholder="No que você está pensando?"
         value={post}
@@ -113,6 +113,9 @@ const Social = (props) => {
                   </View>
                   <Text style={styles.post}>{dev.Post}</Text>
                   <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity style={{marginRight: 10}}>
+                      <Icon name="heart" type="feather" color="#73788B" style={{ marginTop: 10 }}/>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome})}>
                       <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
                     </TouchableOpacity>
