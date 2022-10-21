@@ -15,6 +15,7 @@ import Calendario from '../pages/calendario';
 import ImgShow from '../pages/exames/showImage'
 import { DrawerContent } from './DrawerContent';
 import EditCalendario from '../pages/calendario/EditCalendario';
+import Postshow from '../pages/social/showPost';
 
 import { Icon } from '@rneui/themed';
 import 'react-native-gesture-handler';
@@ -37,7 +38,7 @@ function Tabs(){
   return(
     <Tab.Navigator screenOptions={{headerShown: false}}>
       <Tab.Screen name="Exames" component={Exames} options={{tabBarIcon: () => (
-        <Icon name="description" size={30} color="black" color="black"/>
+        <Icon name="description" size={30} color="black" />
       )}} />
       <Tab.Screen name="Alarme" component={Alarme} options={{tabBarIcon: () => (
         <Icon name="clock" type="entypo" size={30} color="black"/>
@@ -78,7 +79,8 @@ function Route({navigation}) {
           ),
         }}/>
           <Stack.Screen name="Configurações do usuárioScreen" component={UserConf} options={{headerShown: false}} />
-          <Stack.Screen name="ImageShow" component={ImgShow} options={{headerShown: false}} />
+          <Stack.Screen name="ImageShow" component={ImgShow} options={{headerShown: true, title: 'Voltar'}} />
+          <Stack.Screen name="PostShow" component={Postshow} options={{headerShown: true, title: 'Comentários'}} />
           <Stack.Screen name="CreateAlarm" component={CriarAlarme} options={{headerShown: false}} />
           <Stack.Screen name="Editar Alarme" component={EditAlarm} options={{headerShown: true}}/>
           <Stack.Screen name="Editar Calendario" component={EditCalendario} options={{headerShown: true}}/>

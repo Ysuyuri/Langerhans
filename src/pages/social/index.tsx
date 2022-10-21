@@ -1,15 +1,15 @@
-import { View, Text, StyleSheet, TouchableOpacity, SegmentedControlIOSComponent, Alert,  } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import firebase from 'firebase';
 import { Icon } from '@rneui/themed';
 import { v4 as uuid } from 'uuid'
 import 'react-native-get-random-values';
 
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 
-const Social = () => {
+const Social = (props) => {
 
   const db = firebase.firestore();
   const dayjs = require('dayjs')
@@ -21,7 +21,8 @@ const Social = () => {
   const [data, setData] = useState([])
   const [post, setPost] = useState("")
   const [genUuid, setgenUuid] = useState("")
-  const [comment, setComment] = useState("")
+  const [comment, setComment] = useState({ComentUid: ""})
+  /*Criar um map pesquisando o ID do post e definir pra ele puxar o array 1 relacionando o filtro do Map*/
 
   useFocusEffect(
     React.useCallback(() => {
@@ -61,6 +62,7 @@ const Social = () => {
      } else {
       const gennerate: string = uuid();
       db.collection("Posts").doc(gennerate).set({
+        IdPost: gennerate,
         DataPost: hoje,
         Nome: name,
         Post: post,
@@ -77,6 +79,7 @@ const Social = () => {
     console.log(comment)
   }
 
+  data.sort((a, b) => (a.DataPost < b.DataPost) ? 1 : -1)
 
   return (
     <View style={styles.container}>
@@ -110,22 +113,8 @@ const Social = () => {
                   </View>
                   <Text style={styles.post}>{dev.Post}</Text>
                   <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome})}>
                       <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.postSubmite}>
-                    <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
-                      <TextInput 
-                      multiline={true} 
-                      numberOfLines={4} 
-                      style={{ flex: 1 }}
-                      placeholder="Escreva um comentário!"
-                      value={comment}
-                      onChangeText={handleChange}>
-                      </TextInput>
-                    <TouchableOpacity style={styles.submite} onPress={sendComment}>
-                      <Icon name="send" type="Feather" color="#73788B"/>
                     </TouchableOpacity>
                   </View>
                 </View>
