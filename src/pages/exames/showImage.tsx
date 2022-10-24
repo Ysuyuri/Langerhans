@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, View, Text, Dimensions, StyleSheet } from "react-native";
 import { Provider, Portal, FAB } from "react-native-paper";
 import firebase from 'firebase';

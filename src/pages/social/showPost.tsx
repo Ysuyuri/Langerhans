@@ -16,16 +16,19 @@ const Postshow = (props, {navigation}) => {
     const NomePost = props.route.params.usuPost
     const Post = props.route.params.post
     const DataPost = props.route.params.datapost;
-    const gennerate: string = uuid();
-    const hoje = `${moment(dayjs().toString()).format('DD/MM/YYYY HH:mm')}`
+    const hoje = `${dayjs().toString()}`
+    const uidPost = props.route.params.uidPost
     
     const [data, setData] = useState([])
     const [post, setPost] = useState("")
     const [name, setName] = useState("")
+    const [uid, setUid] = useState('')
 
     useFocusEffect(
         React.useCallback(() => {
-            firebase.firestore().collection("Posts").doc(Id).collection("Coments").onSnapshot((querySnapshot) => {
+          const user = firebase.auth().currentUser
+          setUid(user.uid)
+            firebase.firestore().collection("Posts").doc(Id).collection("Comment").onSnapshot((querySnapshot) => {
                 const items = []
                 querySnapshot.forEach((doc) => {
                   items.push(doc.data())
@@ -48,10 +51,13 @@ const Postshow = (props, {navigation}) => {
          Alert.alert("Comentário vazio.")
         } else {
          const gennerate: string = uuid();
-         db.collection("Posts").doc(Id).collection("Coments").doc(gennerate).set({
-           IdComment: gennerate,
+         const gennerate2: string = uuid();
+         db.collection("Posts").doc(Id).collection("Comment").doc(gennerate).set({
+           Id: gennerate,
+           IdComment: gennerate2,
            DataComment: hoje,
            Nome: name,
+           uid: uid,
            Comment: post,
        })
        .catch((error) => {
@@ -61,6 +67,7 @@ const Postshow = (props, {navigation}) => {
        setPost("")
     }
    
+    data.sort((a, b) => (a.DataComment < b.DataComment) ? 1 : -1)
 
   return (      
     <View style={styles.container}>
@@ -75,29 +82,56 @@ const Postshow = (props, {navigation}) => {
             onChangeText={(value) => setPost(value)}>
             </TextInput>
         <TouchableOpacity style={styles.submite} onPress={SendComment}>
-            <Icon name="send" type="Feather" color="#73788B"/>
+            <Icon name="send" type="feather" color="#73788B"/>
         </TouchableOpacity>
       </View>
 
-
-      <Text>{Id}</Text>
-      <Text>{NomePost}</Text>
-      <Text>{Post}</Text>
-      <Text>{DataPost}</Text>
+      <View style={styles.feedItemPub}>
+            <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
+            <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <View>
+                  <Text style={styles.name}>{NomePost}</Text>
+                  <Text style={styles.post}>{Post}</Text>
+                  <Text style={styles.timestamp}>{moment(DataPost).format('DD/MM/YYYY HH:mm')}</Text>
+                </View>
+              </View>
+              
+              <View style={{ flexDirection: "row" }}>
+              </View>
+            </View>
+          </View>
       {data.map((dev) => {
         return(
-            <View style={styles.feedItem} key={dev.id}>
+            <View style={styles.feedItem} key={dev.IdComment}>
             <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <View>
                   <Text style={styles.name}>{dev.Nome}</Text>
                   <Text style={styles.post}>{dev.Comment}</Text>
-                  <Text style={styles.timestamp}>{dev.DataComment}</Text>
+                  <Text style={styles.timestamp}>{moment(dev.DataComment).format('DD/MM/YYYY HH:mm')}</Text>
                 </View>
-                <TouchableOpacity>
-                    <Icon name='heart' type='feather' color="#73788B"/>
-                </TouchableOpacity>
+
+                {(() => {
+                  if (uidPost == uid) {
+                    return (
+                      <TouchableOpacity onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
+                        <Icon name='trash-2' type='feather' color="#73788B"/>
+                      </TouchableOpacity>
+                    )
+                  } else if (uid == dev.uid) {
+                    return (
+                      <TouchableOpacity onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
+                        <Icon name='trash-2' type='feather' color="#73788B"/>
+                      </TouchableOpacity>
+                    )
+                  } else {
+                    return (
+                      <View/>
+                    )
+                  }
+                })()}
               </View>
               
               <View style={{ flexDirection: "row" }}>
@@ -141,7 +175,20 @@ const styles = StyleSheet.create ({
     borderRadius: 5,
     padding: 8,
     flexDirection: "row",
-    marginVertical: 8
+    marginVertical: 8,
+    marginTop: 0,
+    marginBottom: 0
+  },
+  feedItemPub: {
+    marginTop: 0,
+    marginBottom: 0,
+    backgroundColor: "#FFF",
+    borderRadius: 5,
+    padding: 8,
+    flexDirection: "row",
+    marginVertical: 8,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
   },
   name: {
     fontSize: 15,

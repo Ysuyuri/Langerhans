@@ -2,7 +2,6 @@ import React, {
     createContext,
     useContext,
     FC,
-    useEffect,
     useState,
   } from "react";
   import Realm from "realm";
@@ -13,12 +12,7 @@ import React, {
   const RealmContextProvider: FC = ({ children }) => {
     const [realm, setRealm] = useState<Realm | undefined>(undefined);
   
-    useEffect(() => {
-      (async () => {
-        setRealm(await getRealm());
-      })();
-    }, []);
-  
+ 
     return (
       <RealmContext.Provider value={realm}>{children}</RealmContext.Provider>
     );

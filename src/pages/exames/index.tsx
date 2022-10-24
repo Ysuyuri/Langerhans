@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ImageBackground, Dimensions} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FAB, Portal, Provider } from 'react-native-paper';
 import * as ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons';

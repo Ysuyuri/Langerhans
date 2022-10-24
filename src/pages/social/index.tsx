@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import firebase from 'firebase';
 import { Icon } from '@rneui/themed';
@@ -14,7 +14,7 @@ const Social = (props) => {
   const db = firebase.firestore();
   const dayjs = require('dayjs')
 
-  const hoje = `${moment(dayjs().toString()).format('DD/MM/YYYY HH:mm')}`
+  const hoje = `${dayjs().toString()}`
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [uid, setUid] = useState('');
@@ -22,7 +22,12 @@ const Social = (props) => {
   const [post, setPost] = useState("")
   const [genUuid, setgenUuid] = useState("")
   const [comment, setComment] = useState({ComentUid: ""})
-  /*Criar um map pesquisando o ID do post e definir pra ele puxar o array 1 relacionando o filtro do Map*/
+  const [like, setLike] = useState(false)
+  const [likeCount, setLikeCount] = useState([])
+
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -53,6 +58,29 @@ const Social = (props) => {
                     })
                 }
         })}, 0);
+        data.map((dev) => {
+          firebase.firestore().collection("Posts").doc(dev.IdPost).collection("Likes").onSnapshot((querySnapshot) => {
+            const items2 = []
+            querySnapshot.forEach((doc) => {
+              items2.push(doc.data())
+            })
+            setLikeCount(items2)
+          })
+        })
+
+        const unique = data.filter(dev => {
+          return dev.Nome == name
+        })
+
+        /*if (unique == undefined) {
+          setLike(false)
+          console.log(like)
+          console.log(unique)
+        } else {
+          setLike(true)
+          console.log(unique)
+        }*/
+
     }, []),
   );
 
@@ -75,10 +103,6 @@ const Social = (props) => {
     setPost("")
   }
 
-  const sendComment = () => {
-    console.log(comment)
-  }
-
   data.sort((a, b) => (a.DataPost < b.DataPost) ? 1 : -1)
 
   return (
@@ -94,29 +118,26 @@ const Social = (props) => {
         onChangeText={(value) => setPost(value)}>
         </TextInput>
       <TouchableOpacity style={styles.submite} onPress={SendPost}>
-        <Icon name="send" type="Feather" color="#73788B"/>
+        <Icon name="send" type="feather" color="#73788B"/>
       </TouchableOpacity>
       </View>
       <ScrollView>
       <View style={styles.feed}>
       {data.map((dev) => {
           return(
-              <View style={styles.feedItem} key={dev.DataPost}>
+              <View style={styles.feedItem} key={dev.IdPost}>
                 <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <View>
                       <Text style={styles.name}>{dev.Nome}</Text>
-                      <Text style={styles.timestamp}>{dev.DataPost}</Text>
+                      <Text style={styles.timestamp}>{moment(dev.DataPost).format('DD/MM/YYYY HH:mm')}</Text>
                     </View>
                     <Icon name="more-horiz" type="MaterialIcons" color="#73788B"/>
                   </View>
                   <Text style={styles.post}>{dev.Post}</Text>
                   <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity style={{marginRight: 10}}>
-                      <Icon name="heart" type="feather" color="#73788B" style={{ marginTop: 10 }}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome})}>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome, uidPost: dev.uid})}>
                       <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
                     </TouchableOpacity>
                   </View>

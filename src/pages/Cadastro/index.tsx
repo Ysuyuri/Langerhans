@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TextInput, Alert, StyleSheet, View, Image, ImageBackground, TouchableOpacity, Text, KeyboardAvoidingView, TouchableNativeFeedbackComponent } from 'react-native';
 import { cpf } from 'cpf-cnpj-validator';
 import { TextInputMask } from 'react-native-masked-text';
