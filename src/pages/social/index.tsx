@@ -20,14 +20,6 @@ const Social = (props) => {
   const [uid, setUid] = useState('');
   const [data, setData] = useState([])
   const [post, setPost] = useState("")
-  const [genUuid, setgenUuid] = useState("")
-  const [comment, setComment] = useState({ComentUid: ""})
-  const [like, setLike] = useState(false)
-  const [likeCount, setLikeCount] = useState([])
-
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -58,29 +50,6 @@ const Social = (props) => {
                     })
                 }
         })}, 0);
-        data.map((dev) => {
-          firebase.firestore().collection("Posts").doc(dev.IdPost).collection("Likes").onSnapshot((querySnapshot) => {
-            const items2 = []
-            querySnapshot.forEach((doc) => {
-              items2.push(doc.data())
-            })
-            setLikeCount(items2)
-          })
-        })
-
-        const unique = data.filter(dev => {
-          return dev.Nome == name
-        })
-
-        /*if (unique == undefined) {
-          setLike(false)
-          console.log(like)
-          console.log(unique)
-        } else {
-          setLike(true)
-          console.log(unique)
-        }*/
-
     }, []),
   );
 
@@ -133,7 +102,19 @@ const Social = (props) => {
                       <Text style={styles.name}>{dev.Nome}</Text>
                       <Text style={styles.timestamp}>{moment(dev.DataPost).format('DD/MM/YYYY HH:mm')}</Text>
                     </View>
-                    <Icon name="more-horiz" type="MaterialIcons" color="#73788B"/>
+                    {(() => {
+                    if (dev.uid == uid) {
+                      return (
+                        <TouchableOpacity onPress={() => props.navigation.navigate('EditPost', {uidPost: dev.uid, post: dev.Post, datapost: dev.DataPost, idPost: dev.IdPost})}>
+                          <Icon name="edit" type="feather" color="#73788B"/>
+                        </TouchableOpacity>
+                      )
+                    } else {
+                      return (
+                        <View/>
+                      )
+                    }
+                    })()}
                   </View>
                   <Text style={styles.post}>{dev.Post}</Text>
                   <View style={{ flexDirection: "row" }}>

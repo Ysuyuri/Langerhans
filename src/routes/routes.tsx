@@ -21,6 +21,7 @@ import { Icon } from '@rneui/themed';
 import 'react-native-gesture-handler';
 import CreateAlarm from '../pages/alarmes/CreateAlarm';
 import EditAlarm from '../pages/alarmes/EditAlarm';
+import EditPost from '../pages/social/editPost';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -84,6 +85,7 @@ function Route({navigation}) {
           <Stack.Screen name="CreateAlarm" component={CriarAlarme} options={{headerShown: false}} />
           <Stack.Screen name="Editar Alarme" component={EditAlarm} options={{headerShown: true}}/>
           <Stack.Screen name="Editar Calendario" component={EditCalendario} options={{headerShown: true}}/>
+          <Stack.Screen name="EditPost" component={EditPost} options={{headerShown: true, title: 'Editar Publicação'}} />
         </Stack.Navigator>
   );
 };
