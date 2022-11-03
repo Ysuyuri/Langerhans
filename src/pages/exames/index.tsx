@@ -9,8 +9,13 @@ import firebase from 'firebase';
 
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import {useFocusEffect} from '@react-navigation/native';
+import moment from 'moment';
 
 export default function Exames(props) {
+
+  const dayjs = require('dayjs')
+  const hoje = `${dayjs().toString()}`
+
   const [state, setState] = React.useState({ open: false });
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
@@ -57,6 +62,8 @@ useFocusEffect(
         console.log('ImagePicker Error: ', response.error);
       } else {
         db.collection(uid).doc(response.assets[0].fileName).set({
+          name: moment(hoje).format('YYYYMMDDHHmmss'),
+          data: moment(hoje).format('DD/MM/YYYY HH:mm'),
           filename: response.assets[0].fileName,
           type: response.assets[0].type,
           uri: response.assets[0].uri,
@@ -84,6 +91,8 @@ useFocusEffect(
         console.log('ImagePicker Error: ', response.error);
       } else {
         db.collection(uid).doc(response.assets[0].fileName).set({
+          name: moment(hoje).format('YYYYMMDDHHmmss'),
+          data: moment(hoje).format('DD/MM/YYYY HH:mm'),
           filename: response.assets[0].fileName,
           type: response.assets[0].type,
           uri: response.assets[0].uri,
@@ -94,6 +103,7 @@ useFocusEffect(
 
   return (
     <Provider>
+      <View style={styles.container}>
       <Text style={{
         fontSize: 20,
         marginLeft: 5,
@@ -101,63 +111,81 @@ useFocusEffect(
         marginTop: 2,
         color: 'black',
         }}> Arquivos </Text>
-        <ScrollView>
-        {data.map((dev) => {
-          return (
-            <View style={styles.Tasks} key={dev.filename}>
-                <TouchableOpacity
-                style={styles.deleteImage}
-                onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
-                >
-                  <Icon
-                    name="ios-document-outline"
-                    color="black"
-                    size={50}
-                  />
-                </TouchableOpacity>
-                <Text
-                    style={styles.DescriptionImage}
-                    onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+          <ScrollView>
+          {data.map((dev) => {
+            return (
+              <View style={styles.Tasks} key={dev.filename}>
+                  <TouchableOpacity
+                  style={styles.icon}
+                  onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
                   >
-                    {dev.filename}
-                  </Text>
-                <TouchableOpacity
-                style={styles.deleteImage}
-                onPress={() => {db.collection(uid).doc(dev.filename).delete(); RNFS.unlink(dev.uri)}}
-                >
-                  <Icon
-                    name="trash-outline"
-                    color="black"
-                    size={40}
-                    style={styles.iconRight}
-                  />
-                </TouchableOpacity>
-              </View>
-          )
-        })}
-        </ScrollView>
+                    <Icon
+                      style={styles.icon}
+                      name="ios-document-outline"
+                      color="black"
+                      size={45}
+                    />
+                  </TouchableOpacity>
+                  <View style={{flex: 1}}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <View>
+                        <Text
+                          style={styles.DescriptionImage}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                        >
+                          {dev.name}
+                        </Text>
+                        <Text
+                          style={styles.DescriptionType}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                        >
+                          {dev.data}
+                        </Text>
+                        <Text
+                          style={styles.DescriptionType}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                        >
+                          {dev.type}
+                        </Text>
+                    </View>
+                      <TouchableOpacity
+                      onPress={() => {db.collection(uid).doc(dev.filename).delete(); RNFS.unlink(dev.uri)}}
+                      >
+                        <Icon
+                          name="trash-outline"
+                          color="black"
+                          size={40}
+                        />
+                      </TouchableOpacity>
+                  </View>
+                  </View>
+                </View>
+            )
+          })}
+          </ScrollView>
 
-      <Portal>
-        <FAB.Group
-          fabStyle={{backgroundColor: 'white'}}
-          open={open}
-          icon={open ? 'plus' : 'plus'}
-          actions={[
-            {
-              icon: 'file',
-              label: 'Arquivos',
-              onPress: AbrirArquivos,
-            },
-            {
-              icon: 'camera',
-              label: 'Câmera',
-              onPress: AbrirCamera,
-              small: false,
-            },
-          ]}
-          onStateChange={onStateChange}
-        />
-      </Portal>
+        <Portal>
+          <FAB.Group
+            fabStyle={{backgroundColor: 'white'}}
+            open={open}
+            icon={open ? 'plus' : 'plus'}
+            actions={[
+              {
+                icon: 'file',
+                label: 'Arquivos',
+                onPress: AbrirArquivos,
+              },
+              {
+                icon: 'camera',
+                label: 'Câmera',
+                onPress: AbrirCamera,
+                small: false,
+              },
+            ]}
+            onStateChange={onStateChange}
+          />
+        </Portal>
+        </View>
     </Provider>
   );
 };
@@ -168,9 +196,20 @@ const styles = StyleSheet.create ({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  DescriptionType: {
+    marginTop: 0,
+    fontSize: 14,
+    color: "#838899"
+  },
   previewImage: {
     width: '50%',
     backgroundColor: 'black'
+  },
+  icon: {
+    width: 45,
+    height: 45,
+    borderRadius: 18,
+    marginRight: 16,
   },
   item: {
     alignItems: 'center',
@@ -200,34 +239,29 @@ const styles = StyleSheet.create ({
   },
   container: {
     flex: 1,
-    backgroundColor:"#fff",
-    paddingTop: 20
+    backgroundColor: "#EFECF4"
  },
  containerItem: {
   flex: 1,
   padding: 5,
  },
  Tasks:{
-  width:"100%",
-  flexDirection:"row",
-  justifyContent:"space-between",
-  marginTop:5,
-  backgroundColor: '#F5F5F5',
-  borderRadius: 10
+  backgroundColor: "#FFF",
+  borderRadius: 5,
+  padding: 8,
+  flexDirection: "row",
+  marginVertical: 8,
+  marginTop: 0,
+  marginBottom: 0
  },
  deleteImage:{
-   justifyContent:"center",
-   paddingLeft: 5,
+  alignItems: "flex-end",
+  marginHorizontal: 32
  },
  DescriptionImage:{
-  width:"65%",
-  alignContent:"flex-start",
-  marginLeft: -20,
-  padding: 8,
-  paddingHorizontal: 0,
-  marginBottom: 5,
-  marginRight:0,
-  color:"black",
+  fontSize: 15,
+  fontWeight: "500",
+  color: "#454D65"
  },
   headerContainer: {
     justifyContent: 'center',

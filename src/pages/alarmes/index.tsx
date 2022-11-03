@@ -41,7 +41,8 @@ const onChange = (event, selectedDate) => {
     ticker: 'Hoje',
     loop_sound: true,
     has_button: true,
-    fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:00')
+    fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:00'),
+    auto_cancel: true
   }
   ReactNativeAN.scheduleAlarm(alarmNotifData)
   updateList()

@@ -42,7 +42,7 @@
     "react-native-paper": "^4.11.2",
     "react-native-paper-dates": "^0.8.7",
     "react-native-paper-datetimepicker": "^0.0.2",
-    "react-native-reanimated": "^2.5.0",
+    "react-native-reanimated": "^1.9.0",
     "react-native-safe-area-context": "^4.2.4",
     "react-native-screens": "^3.13.1",
     "react-native-uuid": "^2.0.1",

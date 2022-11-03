@@ -4,7 +4,6 @@ import { cpf } from 'cpf-cnpj-validator';
 import { TextInputMask } from 'react-native-masked-text';
 
 import firebase from '../../config/firebase';
-import { color } from 'react-native-reanimated';
 require('firebase/auth');
 
 const Cadastro = ({ navigation }) => {

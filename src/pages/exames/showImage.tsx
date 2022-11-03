@@ -38,28 +38,6 @@ const ImgShow = (props, {navigation}) => {
             }}
             />
         </View>
-
-            <Portal>
-                <FAB.Group
-                fabStyle={{backgroundColor: 'white'}}
-                open={open}
-                icon={open ? 'plus' : 'plus'}
-                actions={[
-                    {
-                    icon: 'camera',
-                    label: 'Voltar',
-                    onPress: () => props.navigation.navigate('ExamesScreen'),
-                    },
-                    {
-                    icon: 'file',
-                    label: 'Apagar',
-                    onPress: Apagar,
-                    small: false
-                    },
-                ]}
-                onStateChange={onStateChange}
-                />
-            </Portal>
         </Provider>
     )}
 }
