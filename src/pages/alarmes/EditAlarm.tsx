@@ -150,7 +150,7 @@ const AlterarAlarm = () => {
     })
     const alarmNotifData = {
       title: title,
-      message: 'Stand up',
+      message: mensage,
       vibrate: true,
       play_sound: true,
       schedule_type: 'once',
@@ -159,7 +159,6 @@ const AlterarAlarm = () => {
       loop_sound: true,
       has_button: true,
       fire_date: horaEdit,
-      auto_cancel: true
     }
     ReactNativeAN.scheduleAlarm(alarmNotifData)
     props.navigation.navigate('Alarme')
@@ -189,7 +188,6 @@ const AlterarAlarm = () => {
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
           fire_date: `${DomingoUpdate} ${hour}:00`,
-          auto_cancel: true
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
         props.navigation.navigate('Alarme')
@@ -206,7 +204,6 @@ const AlterarAlarm = () => {
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
           fire_date: `${Domingo}`,
-          auto_cancel: true
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
         props.navigation.navigate('Alarme')
@@ -226,7 +223,6 @@ const AlterarAlarm = () => {
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
             fire_date: `${SegundaUpdate} ${hour}:00`,
-            auto_cancel: true
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
           props.navigation.navigate('Alarme')
@@ -243,7 +239,6 @@ const AlterarAlarm = () => {
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
             fire_date: `${Segunda}`,
-            auto_cancel: true
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
           props.navigation.navigate('Alarme')
@@ -263,7 +258,6 @@ const AlterarAlarm = () => {
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
               fire_date: `${TercaUpdate} ${hour}:00`,
-              auto_cancel: true
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
             props.navigation.navigate('Alarme')
@@ -280,7 +274,6 @@ const AlterarAlarm = () => {
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
               fire_date: `${Terca}`,
-              auto_cancel: true
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
             props.navigation.navigate('Alarme')
@@ -300,7 +293,6 @@ const AlterarAlarm = () => {
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
                 fire_date: `${QuartaUpdate} ${hour}:00`,
-                auto_cancel: true
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
               props.navigation.navigate('Alarme')
@@ -317,7 +309,6 @@ const AlterarAlarm = () => {
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
                 fire_date: `${Quarta}`,
-                auto_cancel: true
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
               props.navigation.navigate('Alarme')
@@ -337,7 +328,6 @@ const AlterarAlarm = () => {
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
                   fire_date: `${QuintaUpdate} ${hour}:00`,
-                  auto_cancel: true
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
                 props.navigation.navigate('Alarme')
@@ -354,7 +344,6 @@ const AlterarAlarm = () => {
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
                   fire_date: `${Quinta}`,
-                  auto_cancel: true
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
                 props.navigation.navigate('Alarme')
@@ -374,7 +363,6 @@ const AlterarAlarm = () => {
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
                     fire_date: `${SextaUpdate} ${hour}:00`,
-                    auto_cancel: true
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
                   props.navigation.navigate('Alarme')
@@ -391,7 +379,6 @@ const AlterarAlarm = () => {
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
                     fire_date: `${Sexta}`,
-                    auto_cancel: true
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
                   props.navigation.navigate('Alarme')
@@ -411,7 +398,6 @@ const AlterarAlarm = () => {
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
                       fire_date: `${SabadoUpdate} ${hour}:00`,
-                      auto_cancel: true
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
                     props.navigation.navigate('Alarme')
@@ -428,7 +414,6 @@ const AlterarAlarm = () => {
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
                       fire_date: `${Sabado}`,
-                      auto_cancel: true
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
                     props.navigation.navigate('Alarme')
