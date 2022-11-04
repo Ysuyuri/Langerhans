@@ -10,6 +10,7 @@ import { Icon } from '@rneui/themed';
 
 import ReactNativeAN from 'react-native-alarm-notification';
 import { ScrollView } from 'react-native-gesture-handler';
+import dayjs from 'dayjs';
 
 const Alarme = (props, {navigation}) => {
   const [list, setList] = useState([]);
@@ -27,25 +28,47 @@ const Alarme = (props, {navigation}) => {
 
 const [date, setDate] = useState(new Date(Date.now()));
 const [show, setShow] = useState(false);
+const _hoje = `${moment(dayjs().toString()).format('YYYYMMDDHHmmss')}`
 
 const onChange = (event, selectedDate) => {
   setShow(false);
   setDate(new Date(Date.now()));
-  const alarmNotifData = {
-    title: 'Alarm',
-    message: 'Stand up',
-    vibrate: true,
-    play_sound: true,
-    schedule_type: 'once',
-    channel: moment(selectedDate).format('HHmm'),
-    ticker: 'Hoje',
-    loop_sound: true,
-    has_button: true,
-    fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:00'),
-    auto_cancel: true
+  const DateUpdate = moment().add(1, 'days').format('DD-MM-YYYY')
+  if (_hoje > moment(selectedDate).format('YYYYMMDDHHmmss')) {
+    const alarmNotifData = {
+      title: 'Alarm',
+      message: 'Stand up',
+      vibrate: true,
+      play_sound: true,
+      schedule_type: 'once',
+      channel: 'Normal',
+      ticker: `${DateUpdate}${moment(selectedDate).format('HHmmss')}`,
+      loop_sound: true,
+      has_button: true,
+      fire_date: `${DateUpdate} ${moment(selectedDate).format('HH:mm:00')}`,
+      auto_cancel: true,
+      data: { date: `${moment(selectedDate).add(1, 'days').format('DD/MM/YYYY')}`}
+    }
+    ReactNativeAN.scheduleAlarm(alarmNotifData)
+    updateList()
+  } else {
+    const alarmNotifData = {
+      title: 'Alarm',
+      message: 'Stand up',
+      vibrate: true,
+      play_sound: true,
+      schedule_type: 'once',
+      channel: 'Normal',
+      ticker: moment(selectedDate).format('YYYYMMDDHHmmss'),
+      loop_sound: true,
+      has_button: true,
+      fire_date: moment(selectedDate).format('DD-MM-YYYY HH:mm:00'),
+      auto_cancel: true,
+      data: {date: `${moment(selectedDate).format('DD/MM/YYYY')}`}
+    }
+    ReactNativeAN.scheduleAlarm(alarmNotifData)
+    updateList()
   }
-  ReactNativeAN.scheduleAlarm(alarmNotifData)
-  updateList()
 };
 
 const showMode = () => {
@@ -76,10 +99,10 @@ const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 const uniqueIds = [];
 
   const uniqueEmployees = list.filter(element => {
-    const isDuplicate = uniqueIds.includes(element.channel);
+    const isDuplicate = uniqueIds.includes(element.ticker);
 
     if (!isDuplicate) {
-      uniqueIds.push(element.channel);
+      uniqueIds.push(element.ticker);
 
       return true;
     }
@@ -88,10 +111,10 @@ const uniqueIds = [];
   });
 
   const uniqueEmployees2 = uniqueEmployees.filter(dev => {
-    return dev.ticker !== 'Calendario'
+    return dev.channel !== 'Calendario'
   })
 
-  uniqueEmployees2.sort((a, b) => (a.channel > b.channel) ? 1 : -1)
+  uniqueEmployees2.sort((a, b) => (a.ticker > b.ticker) ? 1 : -1)
 
   return (
     <Provider>
@@ -141,18 +164,25 @@ const uniqueIds = [];
       <View style={styles.header}>
         <Text style={styles.text}>Próximo Alarme</Text>
         <Text style={styles.alarme}>{`${padLeadingZeros(uniqueEmployees2[0].hour, 2)}:${padLeadingZeros(uniqueEmployees2[0].minute, 2)}`}</Text>
-        <Text style={styles.data}>{`${padLeadingZeros(uniqueEmployees2[0].ticker, 2)} | ${padLeadingZeros(uniqueEmployees2[0].title, 2)}`}</Text>
+        <Text style={styles.data}>{`${padLeadingZeros(uniqueEmployees2[0].title, 2)}`}</Text>
       </View>
         <Text style={{marginTop: 10, marginLeft: 10, marginBottom: 10, fontSize: 20, color: 'black'}}>Alarmes</Text>
       <ScrollView>
-      {uniqueEmployees2.map((dev) => {
+      {uniqueEmployees2[0] == undefined
+      ?
+      <View></View>
+      :
+      uniqueEmployees2.map((dev) => {
+        /*const data = dev.data.split('>')[1].slice(0, -2);
+        const splitData = data.split('>')[1];
+        const dataEnd = splitData.slice(0, -2);*/
             return (
                   <View style={styles.Tasks} key={dev.id}>
                     <View style={styles.containerCollapse}>
                       <Text style={styles.TitleAlarm} >
                         {`${padLeadingZeros(dev.hour, 2)}:${padLeadingZeros(dev.minute, 2)}`}
                       </Text>
-                      <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.channel, semana: dev.ticker}) }}>
+                      <TouchableOpacity style={styles.edit} onPress={() => { props.navigation.navigate('Editar Alarme', {id: dev.id, hora: dev.hour, minuto: dev.minute, dia: dev.day, mes: dev.month, ano: dev.year, titulo: dev.title, mensagem: dev.message, canal: dev.ticker, semanaS: dev.data}) }}>
                       <Icon 
                       name="edit"
                       type="Feather"
@@ -162,7 +192,7 @@ const uniqueIds = [];
                     </TouchableOpacity>
                     </View>
                     <Text style={styles.DateAlarm}>
-                      {`${dev.ticker} | ${dev.title}`}
+                      {`${dev.title}`}
                     </Text>
                   </View>
             )}

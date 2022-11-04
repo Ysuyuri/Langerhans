@@ -17,7 +17,7 @@ const mes = props.route.params.mes
 const ano = props.route.params.ano
 const titulo = props.route.params.titulo
 const mensagem = props.route.params.mensagem
-const semana = props.route.params.semana
+const semana = props.route.params.semanaS
 
 const dayjs = require('dayjs')
 var weekday = require('dayjs/plugin/weekday')
@@ -81,9 +81,14 @@ useFocusEffect(
 const [date, setDate] = useState(new Date(Date.now()));
 const [show, setShow] = useState(false);
 const [hour, setHour] = useState(`${hora}:${minuto}`)
+const [hourChannel, setHourChannel] = useState(`${ano}${mes}${dia}${padLeadingZeros(hora, 2)}${padLeadingZeros(minuto, 2)}00`)
+const [hourD, setHourD] = useState(`${padLeadingZeros(hora, 2)}:${padLeadingZeros(minuto, 2)}`)
+const [_hour, _setHour] = useState(`${hora}${minuto}`)
 const [title, setTitle] = useState(titulo);
 const [mensage, setMensage] = useState(mensagem);
 const [horaEdit, setHoraEdit] = useState(`${dia}-${mes}-${ano} ${hora}:${minuto}:00`)
+const [dateTicket, setDateTicker] = useState(`${dia}/${mes}/${ano}`)
+const [dateTickerTomorrow, setDateTickerTomorrow] = useState('')
 
 const hoje = `${moment(dayjs().toString()).format('DD-MM-YYYY HH:mm:ss')}`
 const Domingo = `${moment(dayjs().day(0).toString()).format('DD-MM-YYYY')} ${hour}:00`
@@ -94,11 +99,24 @@ const Quinta = `${moment(dayjs().day(4).toString()).format('DD-MM-YYYY')} ${hour
 const Sexta = `${moment(dayjs().day(5).toString()).format('DD-MM-YYYY')} ${hour}:00`
 const Sabado = `${moment(dayjs().day(6).toString()).format('DD-MM-YYYY')} ${hour}:00`
 
+const _hoje = `${moment(dayjs().toString()).format('YYYYMMDDHHmmss')}`
+const _Domingo = `${moment(dayjs().day(0).toString()).format('YYYYMMDD')}${_hour}00`
+const _Segunda = `${moment(dayjs().day(1).toString()).format('YYYYMMDD')}${_hour}00`
+const _Terca = `${moment(dayjs().day(2).toString()).format('YYYYMMDD')}${_hour}00`
+const _Quarta = `${moment(dayjs().day(3).toString()).format('YYYYMMDD')}${_hour}00`
+const _Quinta = `${moment(dayjs().day(4).toString()).format('YYYYMMDD')}${_hour}00`
+const _Sexta = `${moment(dayjs().day(5).toString()).format('YYYYMMDD')}${_hour}00`
+const _Sabado = `${moment(dayjs().day(6).toString()).format('YYYYMMDD')}${_hour}00`
+
 const onChange = (event, selectedDate) => {
     setShow(false);
     setDate(new Date(Date.now()));
     setHour(moment(selectedDate).format('HH:mm'));
-    setHoraEdit(moment(selectedDate).format('DD-MM-YYYY HH:mm:ss'))
+    setHourD(moment(selectedDate).format('HH:mm'))
+    setHoraEdit(moment(selectedDate).format('DD-MM-YYYY HH:mm'))
+    setHourChannel(moment(selectedDate).format('YYYYMMDDHHmmss'))
+    setDateTicker(moment(selectedDate).format('DD/MM/YYYY'))
+    setDateTickerTomorrow(moment(selectedDate).add(1, 'days').format('DD/MM/YYYY'))
   };
   
 const showMode = () => {
@@ -107,7 +125,7 @@ const showMode = () => {
 
 const DeleteAlarm = () => {
   const searchId = list.filter(dev => {
-    return dev.channel === canal;
+    return dev.ticker === canal;
   })
   searchId.map((dev) => {
     ReactNativeAN.deleteAlarm(dev.id);
@@ -142,52 +160,73 @@ const AlterarAlarm = () => {
 
   if (pressDom == false && pressSeg == false && pressTer == false && pressQua == false && pressQui == false && pressSex == false && pressSab == false) {
     const searchId = list.filter(dev => {
-      return dev.channel === canal;
+      return dev.ticker === canal;
     })
     searchId.map((dev) => {
       ReactNativeAN.deleteAlarm(dev.id);
       ReactNativeAN.deleteRepeatingAlarm(dev.id);
     })
-    const alarmNotifData = {
-      title: title,
-      message: mensage,
-      vibrate: true,
-      play_sound: true,
-      schedule_type: 'once',
-      channel: hour,
-      ticker: 'Hoje',
-      loop_sound: true,
-      has_button: true,
-      fire_date: horaEdit,
+    if (_hoje > hourChannel) {
+      const DateUpdate = moment().add(1, 'days').format('DD-MM-YYYY')
+      const alarmNotifData = {
+        title: title,
+        message: mensage,
+        vibrate: true,
+        play_sound: true,
+        schedule_type: 'once',
+        channel: 'Normal',
+        ticker: hourChannel,
+        loop_sound: true,
+        has_button: true,
+        fire_date: `${DateUpdate} ${hour}:00`,
+        data: { date: dateTickerTomorrow}
+      }
+      ReactNativeAN.scheduleAlarm(alarmNotifData)
+      props.navigation.navigate('Alarme')
+    } else {
+      const alarmNotifData = {
+        title: title,
+        message: mensage,
+        vibrate: true,
+        play_sound: true,
+        schedule_type: 'once',
+        channel: 'Normal',
+        ticker: hourChannel,
+        loop_sound: true,
+        has_button: true,
+        fire_date: `${horaEdit}:00`,
+        data: { date: dateTicket}
+      }
+      ReactNativeAN.scheduleAlarm(alarmNotifData)
+      props.navigation.navigate('Alarme')
     }
-    ReactNativeAN.scheduleAlarm(alarmNotifData)
-    props.navigation.navigate('Alarme')
+
   }
   else {
     ReactNativeAN.deleteAlarm(id);
     ReactNativeAN.deleteRepeatingAlarm(id);
     if (pressDom == true) {
       const searchId = list.filter(dev => {
-        return dev.channel === canal;
+        return dev.ticker === canal;
       })
       searchId.map((dev) => {
         ReactNativeAN.deleteAlarm(dev.id);
         ReactNativeAN.deleteRepeatingAlarm(dev.id);
       })
-      if (hoje > Domingo) {
+      if (_hoje > _Domingo) {
         const DomingoUpdate = moment().add(1, 'weeks').isoWeekday(0).format('DD-MM-YYYY')
-
         const alarmNotifData = {
           title: title,
           message: mensage,
           vibrate: true,
           play_sound: true,
-          channel: `${hour} repeat`,
-          ticker: dataSemana,
+          channel: 'Normal',
+          ticker: `${hour} repeat`,
           loop_sound: true,
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
           fire_date: `${DomingoUpdate} ${hour}:00`,
+          data: { date: dataSemana}
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
         props.navigation.navigate('Alarme')
@@ -198,31 +237,33 @@ const AlterarAlarm = () => {
           message: mensage,
           vibrate: true,
           play_sound: true,
-          channel: `${hour} repeat`,
-          ticker: dataSemana,
+          channel: 'Normal',
+          ticker: `${hour} repeat`,
           loop_sound: true,
           schedule_type: 'repeat',
           repeat_interval: 'weekly',
           fire_date: `${Domingo}`,
+          data: { date: dataSemana}
         }
         ReactNativeAN.scheduleAlarm(alarmNotifData)
         props.navigation.navigate('Alarme')
       }
     }
     if (pressSeg == true) {
-      if (hoje > Segunda) {
+      if (_hoje > _Segunda) {
           const SegundaUpdate = moment().add(1, 'weeks').isoWeekday(1).format('DD-MM-YYYY')
           const alarmNotifData = {
             title: title,
             message: mensage,
             vibrate: true,
             play_sound: true,
-            channel: `${hour} repeat`,
-            ticker: dataSemana,
+            channel: 'Normal',
+            ticker: `${hour} repeat`,
             loop_sound: true,
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
             fire_date: `${SegundaUpdate} ${hour}:00`,
+            data: { date: dataSemana}
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
           props.navigation.navigate('Alarme')
@@ -233,31 +274,33 @@ const AlterarAlarm = () => {
             message: mensage,
             vibrate: true,
             play_sound: true,
-            channel: `${hour} repeat`,
-            ticker: dataSemana,
+            channel: 'Normal',
+            ticker: `${hour} repeat`,
             loop_sound: true,
             schedule_type: 'repeat',
             repeat_interval: 'weekly',
             fire_date: `${Segunda}`,
+            data: { date: dataSemana}
           }
           ReactNativeAN.scheduleAlarm(alarmNotifData)
           props.navigation.navigate('Alarme')
         }
       }
         if (pressTer == true) {
-          if (hoje > Terca) {
+          if (_hoje > _Terca) {
             const TercaUpdate = moment().add(1, 'weeks').isoWeekday(2).format('DD-MM-YYYY')
             const alarmNotifData = {
               title: title,
               message: mensage,
               vibrate: true,
               play_sound: true,
-              channel: `${hour} repeat`,
-              ticker: dataSemana,
+              channel: 'Normal',
+              ticker: `${hour} repeat`,
               loop_sound: true,
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
               fire_date: `${TercaUpdate} ${hour}:00`,
+              data: { date: dataSemana}
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
             props.navigation.navigate('Alarme')
@@ -268,31 +311,33 @@ const AlterarAlarm = () => {
               message: mensage,
               vibrate: true,
               play_sound: true,
-              channel: `${hour} repeat`,
-              ticker: dataSemana,
+              channel: 'Normal',
+              ticker: `${hour} repeat`,
               loop_sound: true,
               schedule_type: 'repeat',
               repeat_interval: 'weekly',
               fire_date: `${Terca}`,
+              data: { date: dataSemana}
             }
             ReactNativeAN.scheduleAlarm(alarmNotifData)
             props.navigation.navigate('Alarme')
           }
         }
           if (pressQua == true) {
-            if (hoje > Quarta) {
+            if (_hoje > _Quarta) {
               const QuartaUpdate = moment().add(1, 'weeks').isoWeekday(3).format('DD-MM-YYYY')
               const alarmNotifData = {
                 title: title,
                 message: mensage,
                 vibrate: true,
                 play_sound: true,
-                channel: `${hour} repeat`,
-                ticker: dataSemana,
+                channel: 'Normal',
+                ticker: `${hour} repeat`,
                 loop_sound: true,
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
                 fire_date: `${QuartaUpdate} ${hour}:00`,
+                data: { date: dataSemana}
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
               props.navigation.navigate('Alarme')
@@ -303,31 +348,33 @@ const AlterarAlarm = () => {
                 message: mensage,
                 vibrate: true,
                 play_sound: true,
-                channel: `${hour} repeat`,
-                ticker: dataSemana,
+                channel: 'Normal',
+                ticker: `${hour} repeat`,
                 loop_sound: true,
                 schedule_type: 'repeat',
                 repeat_interval: 'weekly',
                 fire_date: `${Quarta}`,
+                data: { date: dataSemana}
               }
               ReactNativeAN.scheduleAlarm(alarmNotifData)
               props.navigation.navigate('Alarme')
             }
           }
             if (pressQui == true) {
-              if (hoje > Quinta) {
+              if (_hoje > _Quinta) {
                 const QuintaUpdate = moment().add(1, 'weeks').isoWeekday(4).format('DD-MM-YYYY')
                 const alarmNotifData = {
                   title: title,
                   message: mensage,
                   vibrate: true,
                   play_sound: true,
-                  channel: `${hour} repeat`,
-                  ticker: dataSemana,
+                  channel: 'Normal',
+                  ticker: `${hour} repeat`,
                   loop_sound: true,
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
                   fire_date: `${QuintaUpdate} ${hour}:00`,
+                  data: { date: dataSemana}
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
                 props.navigation.navigate('Alarme')
@@ -338,31 +385,33 @@ const AlterarAlarm = () => {
                   message: mensage,
                   vibrate: true,
                   play_sound: true,
-                  channel: `${hour} repeat`,
-                  ticker: dataSemana,
+                  channel: 'Normal',
+                  ticker: `${hour} repeat`,
                   loop_sound: true,
                   schedule_type: 'repeat',
                   repeat_interval: 'weekly',
                   fire_date: `${Quinta}`,
+                  data: { date: dataSemana}
                 }
                 ReactNativeAN.scheduleAlarm(alarmNotifData)
                 props.navigation.navigate('Alarme')
               }
             }
               if (pressSex == true) {
-                if (hoje > Sexta) {
+                if (_hoje > _Sexta) {
                   const SextaUpdate = moment().add(1, 'weeks').isoWeekday(5).format('DD-MM-YYYY')
                   const alarmNotifData = {
                     title: title,
                     message: mensage,
                     vibrate: true,
                     play_sound: true,
-                    channel: `${hour} repeat`,
-                    ticker: dataSemana,
+                    channel: 'Normal',
+                    ticker: `${hour} repeat`,
                     loop_sound: true,
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
                     fire_date: `${SextaUpdate} ${hour}:00`,
+                    data: { date: dataSemana}
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
                   props.navigation.navigate('Alarme')
@@ -373,31 +422,33 @@ const AlterarAlarm = () => {
                     message: mensage,
                     vibrate: true,
                     play_sound: true,
-                    channel: `${hour} repeat`,
-                    ticker: dataSemana,
+                    channel: 'Normal',
+                    ticker: `${hour} repeat`,
                     loop_sound: true,
                     schedule_type: 'repeat',
                     repeat_interval: 'weekly',
                     fire_date: `${Sexta}`,
+                    data: { date: dataSemana}
                   }
                   ReactNativeAN.scheduleAlarm(alarmNotifData)
                   props.navigation.navigate('Alarme')
                 }
               }
                 if (pressSab == true) {
-                  if (hoje > Sabado) {
+                  if (_hoje > _Sabado) {
                     const SabadoUpdate = moment().add(1, 'weeks').isoWeekday(6).format('DD-MM-YYYY')
                     const alarmNotifData = {
                       title: title,
                       message: mensage,
                       vibrate: true,
                       play_sound: true,
-                      channel: `${hour} repeat`,
-                      ticker: dataSemana,
+                      channel: 'Normal',
+                      ticker: `${hour} repeat`,
                       loop_sound: true,
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
                       fire_date: `${SabadoUpdate} ${hour}:00`,
+                      data: { date: dataSemana}
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
                     props.navigation.navigate('Alarme')
@@ -408,12 +459,13 @@ const AlterarAlarm = () => {
                       message: mensage,
                       vibrate: true,
                       play_sound: true,
-                      channel: `${hour} repeat`,
-                      ticker: dataSemana,
+                      channel: 'Normal',
+                      ticker: `${hour} repeat`,
                       loop_sound: true,
                       schedule_type: 'repeat',
                       repeat_interval: 'weekly',
                       fire_date: `${Sabado}`,
+                      data: { date: dataSemana}
                     }
                     ReactNativeAN.scheduleAlarm(alarmNotifData)
                     props.navigation.navigate('Alarme')
@@ -424,7 +476,7 @@ const AlterarAlarm = () => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.alarme}>{hour}</Text>
+        <Text style={styles.alarme}>{hourD}</Text>
         <TouchableOpacity style={styles.EditarHoraBotao} onPress={showMode}> 
               <Text style={styles.EditarHoraTexto}>Alterar</Text>          
         </TouchableOpacity>

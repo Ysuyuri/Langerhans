@@ -112,6 +112,17 @@ useFocusEffect(
         color: 'black',
         }}> Arquivos </Text>
           <ScrollView>
+          {data == ""
+          ?
+          <View>
+            <View style={{marginTop: 250,justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontSize: 18, marginVertical: 2, fontWeight: "500"}}>Nenhum arquivo encontrado</Text>
+              <Text style={{fontSize: 15, marginVertical: 2}}>Adicione algum arquivo para visualização!</Text>
+            </View>
+          </View>
+          :
+            <View/>
+          }
           {data.map((dev) => {
             return (
               <View style={styles.Tasks} key={dev.filename}>

@@ -121,6 +121,7 @@ const Social = (props) => {
                     <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome, uidPost: dev.uid})}>
                       <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
                     </TouchableOpacity>
+                    <Text style={styles.comment}>Escreva um comentário...</Text>
                   </View>
                 </View>
               </View>
@@ -194,6 +195,12 @@ const styles = StyleSheet.create ({
   },
   post: {
     marginTop: 16,
+    fontSize: 14,
+    color: "#838899"
+  },
+  comment: {
+    marginTop: 10,
+    marginLeft: 5,
     fontSize: 14,
     color: "#838899"
   },
