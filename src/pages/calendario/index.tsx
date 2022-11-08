@@ -3,13 +3,33 @@ import React, { useState, Fragment, useCallback, useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FAB, Portal, Provider } from 'react-native-paper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Calendar, CalendarProps } from 'react-native-calendars';
+import { Calendar, CalendarProps, LocaleConfig } from 'react-native-calendars';
 import moment from 'moment';
 import ReactNativeAN from 'react-native-alarm-notification';
 import { useFocusEffect } from '@react-navigation/native';
 import { Icon } from '@rneui/themed';
 
 const INITIAL_DATE = new Date().toLocaleString() + '';
+LocaleConfig.locales['pt'] = {
+  monthNames: [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
+  ],
+  monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+  dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+}
+LocaleConfig.defaultLocale = 'pt';
 
 const Calendario = (props, {navigation}) => {
   function padLeadingZeros(num, size) {
@@ -116,6 +136,12 @@ const Calendario = (props, {navigation}) => {
             update();
           }}
           markedDates={markedDay}
+          theme={{
+            backgroundColor: 'white',
+            calendarBackground: 'white',
+            selectedDayBackgroundColor: 'blue',
+            selectedDayTextColor: 'white'
+          }}
         />
       </Fragment>
       <ScrollView>
@@ -159,6 +185,7 @@ const Calendario = (props, {navigation}) => {
         />
       </Portal>
         <DateTimePicker
+          is24Hour={true}
           mode="datetime"
           isVisible={isDatePickerVisible}
           onConfirm={onChange}
@@ -176,7 +203,7 @@ const styles = StyleSheet.create ({
     justifyContent: 'center'
   },
   calendar: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   text: {
     textAlign: 'center',
@@ -191,7 +218,7 @@ const styles = StyleSheet.create ({
   },
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F5F5',
   },
   containerCollapse: {
     flex: 1,
@@ -237,7 +264,7 @@ const styles = StyleSheet.create ({
    Tasks:{
     marginBottom: 5,
     paddingLeft: 10,
-    backgroundColor: '#F5F5F5', 
+    backgroundColor: 'white', 
    },
   header: {
     width: '100%',

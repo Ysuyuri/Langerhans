@@ -74,6 +74,7 @@ const Social = (props) => {
 
   data.sort((a, b) => (a.DataPost < b.DataPost) ? 1 : -1)
 
+
   return (
     <View style={styles.container}>
       <View style={styles.postSubmite}>
@@ -93,6 +94,8 @@ const Social = (props) => {
       <ScrollView>
       <View style={styles.feed}>
       {data.map((dev) => {
+        const size = firebase.firestore().collection("Posts").doc(dev.IdPost).collection("Comment").get().then(querySnapshot => querySnapshot.size)
+        console.log(size)
           return(
               <View style={styles.feedItem} key={dev.IdPost}>
                 <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
@@ -123,6 +126,7 @@ const Social = (props) => {
                     </TouchableOpacity>
                     <Text style={styles.comment}>Escreva um comentário...</Text>
                   </View>
+                  <Text style={styles.verComment}>Ver todos os  comentários...</Text>
                 </View>
               </View>
           )
@@ -201,6 +205,12 @@ const styles = StyleSheet.create ({
   comment: {
     marginTop: 10,
     marginLeft: 5,
+    fontSize: 14,
+    color: "#838899"
+  },
+  verComment: {
+    marginTop: 10,
+    marginLeft: 10,
     fontSize: 14,
     color: "#838899"
   },

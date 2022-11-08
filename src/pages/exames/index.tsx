@@ -128,7 +128,7 @@ useFocusEffect(
               <View style={styles.Tasks} key={dev.filename}>
                   <TouchableOpacity
                   style={styles.icon}
-                  onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                  onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid, fileN: dev.name }) }}
                   >
                     <Icon
                       style={styles.icon}
@@ -142,19 +142,19 @@ useFocusEffect(
                     <View>
                         <Text
                           style={styles.DescriptionImage}
-                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid, fileN: dev.name }) }}
                         >
                           {dev.name}
                         </Text>
                         <Text
                           style={styles.DescriptionType}
-                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid, fileN: dev.name }) }}
                         >
                           {dev.data}
                         </Text>
                         <Text
                           style={styles.DescriptionType}
-                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid }) }}
+                          onPress={() => { props.navigation.navigate('ImageShow', { uri: dev.uri, name: dev.filename, uid: uid, fileN: dev.name }) }}
                         >
                           {dev.type}
                         </Text>

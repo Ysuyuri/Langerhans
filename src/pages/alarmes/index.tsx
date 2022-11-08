@@ -1,6 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button} from 'react-native';
-import React, { useState, useEffect } from 'react';
-import HeaderLayout from '../HomeScreen/header';
+import { View, Text, StyleSheet, TouchableOpacity, NativeEventEmitter, NativeModules } from 'react-native';
+import React, { useState } from 'react';
 import { Provider, Portal, FAB, Switch } from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -24,6 +23,15 @@ const Alarme = (props, {navigation}) => {
     setDate(new Date(Date.now()))
   }
 
+  const { RNAlarmNotification } = NativeModules;
+  const RNAlarmEmitter = new NativeEventEmitter(RNAlarmNotification);
+
+  const dismissSubscription = RNAlarmEmitter.addListener(
+    'OnNotificationDismissed', (data) => console.log(JSON.parse(e)));
+
+  const openedSubscription = RNAlarmEmitter.addListener(
+    'OnNotificationOpened', (data) => console.log(JSON.parse(e)));
+
 /*------------------------------------------------------------DATETIMEPICKER------------------------------------------------------------*/
 
 const [date, setDate] = useState(new Date(Date.now()));
@@ -31,8 +39,9 @@ const [show, setShow] = useState(false);
 const _hoje = `${moment(dayjs().toString()).format('YYYYMMDDHHmmss')}`
 
 const onChange = (event, selectedDate) => {
-  setShow(false);
+  if (event.type == "set"){
   setDate(new Date(Date.now()));
+  setShow(false);
   const DateUpdate = moment().add(1, 'days').format('DD-MM-YYYY')
   if (_hoje > moment(selectedDate).format('YYYYMMDDHHmmss')) {
     const alarmNotifData = {
@@ -41,7 +50,7 @@ const onChange = (event, selectedDate) => {
       vibrate: true,
       play_sound: true,
       schedule_type: 'once',
-      channel: 'Normal',
+      channel: 'wakeup',
       ticker: `${DateUpdate}${moment(selectedDate).format('HHmmss')}`,
       loop_sound: true,
       has_button: true,
@@ -58,7 +67,7 @@ const onChange = (event, selectedDate) => {
       vibrate: true,
       play_sound: true,
       schedule_type: 'once',
-      channel: 'Normal',
+      channel: 'wakeup',
       ticker: moment(selectedDate).format('YYYYMMDDHHmmss'),
       loop_sound: true,
       has_button: true,
@@ -68,6 +77,8 @@ const onChange = (event, selectedDate) => {
     }
     ReactNativeAN.scheduleAlarm(alarmNotifData)
     updateList()
+  }} else {
+    setShow(false);
   }
 };
 
