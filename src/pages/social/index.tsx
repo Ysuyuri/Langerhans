@@ -94,8 +94,6 @@ const Social = (props) => {
       <ScrollView>
       <View style={styles.feed}>
       {data.map((dev) => {
-        const size = firebase.firestore().collection("Posts").doc(dev.IdPost).collection("Comment").get().then(querySnapshot => querySnapshot.size)
-        console.log(size)
           return(
               <View style={styles.feedItem} key={dev.IdPost}>
                 <Icon name="user" type="feather" color="#73788B" style={styles.avatar}/>
@@ -124,9 +122,10 @@ const Social = (props) => {
                     <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome, uidPost: dev.uid})}>
                       <Icon name="comment" type="EvilIcons" color="#73788B" style={{ marginTop: 10 }}/>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('PostShow', {comentUid: dev.IdPost, post: dev.Post, datapost: dev.DataPost, usuPost: dev.Nome, uidPost: dev.uid})}>
                     <Text style={styles.comment}>Escreva um comentário...</Text>
+                    </TouchableOpacity>
                   </View>
-                  <Text style={styles.verComment}>Ver todos os  comentários...</Text>
                 </View>
               </View>
           )

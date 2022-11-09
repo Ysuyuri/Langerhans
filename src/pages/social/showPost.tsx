@@ -133,7 +133,6 @@ const Postshow = (props, {navigation}) => {
                   }
                 })()}
               </View>
-              
               <View style={{ flexDirection: "row" }}>
               </View>
             </View>
