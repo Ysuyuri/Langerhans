@@ -22,6 +22,7 @@ import 'react-native-gesture-handler';
 import CreateAlarm from '../pages/alarmes/CreateAlarm';
 import EditAlarm from '../pages/alarmes/EditAlarm';
 import EditPost from '../pages/social/editPost';
+import novasenha from '../pages/Login/novasenha';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,6 +60,7 @@ export default function InitialRoute() {
     <Stack.Navigator initialRouteName="Login" >
       <Stack.Screen name="Cadastro" component={Cadastro} options={{headerShown: false}}/>
       <Stack.Screen name="Login" component={Route} options={{headerShown: false}}/>
+      <Stack.Screen name="novasenha" component={novasenha} options={{headerShown: false}}/>
     </Stack.Navigator>
   );
 };
@@ -94,6 +96,7 @@ function UserConf() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Configurações do usuário" component={UserConfig} />
+      <Stack.Screen name="Logout" component={InitialRoute} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }

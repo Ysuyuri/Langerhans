@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button, ActivityIndicator, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button, ActivityIndicator, TextInput, Alert, KeyboardAvoidingView } from 'react-native';
 import React, { useState } from 'react';
 import { Icon } from '@rneui/themed';
 import { useFocusEffect } from '@react-navigation/native';
 import firebase from 'firebase';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const UserConfig = (props, {navigation}) => {
 
@@ -17,7 +18,8 @@ const UserConfig = (props, {navigation}) => {
   const [showMoreEmail, setShowMoreEmail] = useState(false)
   const [showMoreSenha, setShowMoreSenha] = useState(false)
 
-  const [inputEmail, setInputEmail] = useState('')
+  const [cpf, setCpf] = useState('')
+  const [datanascimento, setDataNascimento] = useState('')
   const [inputName, setInputName] = useState('')
   const [inputSenha, setInputSenha] = useState('')
   const [confInputSenha, setConfInputSenha] = useState('')
@@ -40,6 +42,8 @@ const UserConfig = (props, {navigation}) => {
           docRef.get().then((doc) => {
               if (doc.exists) {
                   setName(doc.data().name);
+                  setCpf(doc.data().cpf)
+                  setDataNascimento(doc.data().data_nascimento)
               }}).catch((error) => {
           })
       setIsLoading(false)
@@ -52,41 +56,38 @@ const UserConfig = (props, {navigation}) => {
     props.navigation.navigate('Exames')}
   }
 
-  const editEmail = () => {
-    if (inputEmail != ''){
-    firebase.auth().currentUser?.updateEmail(inputEmail).then(() => {
-      db.collection('Users').doc(email).update({email: inputEmail})
-      props.navigation.navigate('Exames')
-    }).catch((error) => {
-      Alert.alert(
-        "Erro",
-        "Email inválido!",
-        [
-          {
-            text: "Ok",
-            onPress: () => {setInputEmail('')}
-          }
-        ])
-    })
-    }
-  }
-
   const editSenha = () => {
-    if (inputSenha != ''){
+    if (inputSenha != '' && confInputSenha != ''){
       if(inputSenha == confInputSenha){
-        Alert.alert(
-          "Alterar Senha",
-          "Alteração efetuada com sucesso!",
-          [
-            {
-              text: "Ok",
-              onPress: () => {{
-                setInputSenha('')
-                setConfInputSenha('')
-                firebase.auth().currentUser?.updatePassword(inputSenha)
-                props.navigation.navigate('Exames')}}
-            }
-          ])
+        firebase.auth().currentUser.updatePassword(inputSenha).then(() => {
+          Alert.alert(
+            "Alterar Senha",
+            "Alteração efetuada com sucesso!",
+            [
+              {
+                text: "Ok",
+                onPress: () => {{
+                  setInputSenha('')
+                  setConfInputSenha('')
+                  firebase.auth().signOut()
+                  props.navigation.navigate('Logout')}}
+              }
+            ])
+        }).catch((error) => {
+          console.log(error)
+          Alert.alert(
+            "Erro",
+            `${error}`,
+            [
+              {
+                text: "Ok",
+                onPress: () => {{
+                  setInputSenha('')
+                  setConfInputSenha('')
+              }}
+              }
+            ])
+        })
         } else {
           Alert.alert(
             "Erro",
@@ -97,13 +98,24 @@ const UserConfig = (props, {navigation}) => {
                 onPress: () => {{
                   setInputSenha('')
                   setConfInputSenha('')
-                  firebase.auth().currentUser?.updatePassword(inputSenha)
-                  props.navigation.navigate('Exames')}}
+                }}
               }
             ])
         }
+      } else {
+        Alert.alert(
+          "Campo vazio",
+          "Por favor, digite sua nova senha!",
+          [
+            {
+              text: "Ok",
+              onPress: () => {{
+                setInputSenha('')
+                setConfInputSenha('')
+              }}
+            }
+          ])
       }
-
   }
 
   const ExcluirConta = () => {
@@ -114,8 +126,27 @@ const UserConfig = (props, {navigation}) => {
         {
           text: "Sim",
           onPress: () => {
-            firebase.auth().currentUser?.delete()
-            props.navigation.navigate('Login')
+            firebase.auth().currentUser.delete().then(() => {
+              firebase.auth().signOut()
+              props.navigation.navigate('Logout')
+            }).catch((error) => {
+              Alert.alert(
+                "Excluir conta",
+                "Para essa operação, é necessário que o usuário entre em sua conta novamente! Deseja ser direcionado para a tela de Login?",
+                [
+                  {
+                    text: "Sim",
+                    onPress: () => {
+                      firebase.auth().signOut()
+                      props.navigation.navigate('Logout')
+                    }
+                  },
+                  {
+                    text: "Não"
+                  }
+                ]
+              )
+            })
           }
         },
         {
@@ -137,16 +168,35 @@ const UserConfig = (props, {navigation}) => {
     )
   } else {
   return (
+    <KeyboardAwareScrollView>
     <View style={styles.container}>
       <View style={styles.header}>
         <Icon name="person-circle-outline" type="ionicon" color="white" size={180} style={styles.icone}/>
-        <Text style={styles.text}>Ysuyuri</Text>
+        <Text style={styles.text}>{name}</Text>
       </View>
       <Button
         onPress={ExcluirConta}
         title="Excluir Conta"
         color="red"
       />
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
+        <View style={{ marginLeft: 10, marginBottom: 10 }}>
+          <Text style={styles.info}>E-mail:</Text>
+          <Text style={styles.dado}>{email}</Text>
+        </View>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
+        <View style={{ marginLeft: 10, marginBottom: 10 }}>
+          <Text style={styles.info}>CPF: </Text>
+          <Text style={styles.dado}>{cpf}</Text>
+        </View>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
+        <View style={{ marginLeft: 10, marginBottom: 10 }}>
+          <Text style={styles.info}>Data de Nascimento: </Text>
+          <Text style={styles.dado}>{datanascimento}</Text>
+        </View>
+      </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
         <View style={{ marginLeft: 10, marginBottom: 10 }}>
           <Text style={styles.info}>Nome do Usuário:</Text>
@@ -166,6 +216,7 @@ const UserConfig = (props, {navigation}) => {
               numberOfLines={1} 
               style={{ flex: 1, backgroundColor: '#EFECF4', marginLeft: 10 }}
               placeholder='Insira aqui o novo nome que deseja'
+              placeholderTextColor="#a0a0a0"
               value={inputName}
               onChangeText={(value) => setInputName(value)}>
               </TextInput>
@@ -175,52 +226,59 @@ const UserConfig = (props, {navigation}) => {
                 </TouchableOpacity>
               </View>
             </View>
-
         :
         <View/>
         }
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
-        <View style={{ marginLeft: 10, marginBottom: 10 }}>
-          <Text style={styles.info}>E-mail:</Text>
-          <Text style={styles.dado}>{email}</Text>
-        </View>
-        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
-          setShowMoreEmail(!showMoreEmail)
-          setInputEmail('')}}>
-          <Icon name="edit" type="feather" color="#73788B"/>
-        </TouchableOpacity>
-      </View>
-      {showMoreEmail
-        ?
-            <View style={styles.postSubmite}>
-              <TextInput 
-              multiline={false} 
-              numberOfLines={1} 
-              style={{ flex: 1, backgroundColor: '#EFECF4', marginLeft: 10 }}
-              placeholder='Insira aqui o E-mail nome que deseja'
-              value={inputEmail}
-              onChangeText={(value) => setInputEmail(value)}>
-              </TextInput>
-              <View style={styles.submite}>
-                <TouchableOpacity onPress={editEmail}>
-                  <Icon name="send" type="feather" color="#73788B"/>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-        :
-        <View/>
-      }
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: '#EFECF4', marginTop: 5 }}>
         <View style={{ marginLeft: 10, marginBottom: 5 }}>
           <Text style={styles.info}>Senha:</Text>
           <Text style={styles.dado}>***********</Text>
         </View>
-        <TouchableOpacity style={{ marginRight: 5 }}>
+        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {
+          setShowMoreSenha(!showMoreSenha)
+          setInputSenha('')}}>
           <Icon name="edit" type="feather" color="#73788B"/>
         </TouchableOpacity>
       </View>
+      {showMoreSenha
+        ?
+        <View>
+            <View style={styles.postSubmite}>
+                <TextInput 
+                  secureTextEntry={true}
+                  multiline={false} 
+                  numberOfLines={1} 
+                  style={{ flex: 1, backgroundColor: '#EFECF4', marginLeft: 10 }}
+                  placeholder='Insira sua nova senha'
+                  placeholderTextColor="#a0a0a0"
+                  value={inputSenha}
+                  onChangeText={(value) => setInputSenha(value)}>
+                </TextInput>
+            </View>
+            <View style={styles.postSubmite}>
+                <TextInput 
+                  secureTextEntry={true}
+                  multiline={false} 
+                  numberOfLines={1} 
+                  style={{ flex: 1, backgroundColor: '#EFECF4', marginLeft: 10 }}
+                  placeholder='Confirme sua senha'
+                  placeholderTextColor="#a0a0a0"
+                  value={confInputSenha}
+                  onChangeText={(value) => setConfInputSenha(value)}>
+                </TextInput>
+                <View style={styles.submite}>
+                  <TouchableOpacity onPress={editSenha}>
+                    <Icon name="send" type="feather" color="#73788B"/>
+                  </TouchableOpacity>
+                </View>
+            </View>
+          </View>
+
+        :
+        <View/>
+      }
     </View>
+    </KeyboardAwareScrollView>
   );
 };}
 

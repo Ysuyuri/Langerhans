@@ -84,6 +84,7 @@ const Social = (props) => {
         numberOfLines={3} 
         style={{ flex: 1 }}
         placeholder="No que você está pensando?"
+        placeholderTextColor="#a0a0a0"
         value={post}
         onChangeText={(value) => setPost(value)}>
         </TextInput>

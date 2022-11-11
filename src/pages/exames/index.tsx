@@ -116,8 +116,8 @@ useFocusEffect(
           ?
           <View>
             <View style={{marginTop: 250,justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{fontSize: 18, marginVertical: 2, fontWeight: "500"}}>Nenhum arquivo encontrado</Text>
-              <Text style={{fontSize: 15, marginVertical: 2}}>Adicione algum arquivo para visualização!</Text>
+              <Text style={{fontSize: 18, marginVertical: 2, fontWeight: "500", color: '#a0a0a0'}}>Nenhum arquivo encontrado</Text>
+              <Text style={{fontSize: 15, marginVertical: 2, color: '#a0a0a0'}}>Adicione algum arquivo para visualização!</Text>
             </View>
           </View>
           :

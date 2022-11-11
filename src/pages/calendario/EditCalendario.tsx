@@ -98,14 +98,14 @@ const AlterarAlarme = () => {
         <View style={styles.fundo}>
           <View style={styles.opcoes}>
             <Text style={styles.text}>Título: </Text>
-            <TextInput placeholder={titulo} style={styles.TextInput} onChangeText={setTitle}/>
+            <TextInput placeholder={titulo} placeholderTextColor="#a0a0a0" style={styles.TextInput} onChangeText={setTitle}/>
           </View>
         </View>
 
         <View style={styles.fundo}>
           <View style={styles.opcoes}>
             <Text style={styles.text}>Mensagem: </Text>
-            <TextInput placeholder={mensagem} style={styles.TextInput} onChangeText={setMensage}/>
+            <TextInput placeholder={mensagem} placeholderTextColor="#a0a0a0" style={styles.TextInput} onChangeText={setMensage}/>
           </View>
         </View>
 

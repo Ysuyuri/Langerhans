@@ -39,7 +39,7 @@ const ImgShow = (props, {navigation}) => {
         <View style={styles.fundo}>
           <View style={styles.opcoes}>
             <Text style={styles.text}>Nome: </Text>
-            <TextInput placeholder={name} style={styles.TextInput} onChangeText={setTitle}/>
+            <TextInput placeholder={name} placeholderTextColor="#a0a0a0" style={styles.TextInput} onChangeText={setTitle}/>
           </View>
         </View>
         <View style={{flexDirection:"row", marginLeft: 45}}>

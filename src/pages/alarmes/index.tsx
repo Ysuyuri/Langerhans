@@ -136,12 +136,7 @@ const uniqueIds = [];
           icon={open ? 'plus' : 'plus'}
           actions={[
             {
-              icon: '',
-              label: 'Novo Alarme todas opções',
-              onPress: NewAlarm,
-            },
-            {
-              icon: '',
+              icon: 'alarm',
               label: 'Novo Alarme',
               onPress: showMode,
             },
@@ -184,9 +179,6 @@ const uniqueIds = [];
       <View></View>
       :
       uniqueEmployees2.map((dev) => {
-        /*const data = dev.data.split('>')[1].slice(0, -2);
-        const splitData = data.split('>')[1];
-        const dataEnd = splitData.slice(0, -2);*/
             return (
                   <View style={styles.Tasks} key={dev.id}>
                     <View style={styles.containerCollapse}>

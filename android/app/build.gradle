@@ -153,10 +153,10 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('key_langerhans.keystore')
-            storePassword 'Langerhans'
+            storeFile file('langerhans.keystore')
+            storePassword '81495513'
             keyAlias 'langerhans_alias'
-            keyPassword 'Langerhans'
+            keyPassword '81495513'
         }
     }
     buildTypes {

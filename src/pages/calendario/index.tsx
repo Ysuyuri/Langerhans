@@ -176,7 +176,7 @@ const Calendario = (props, {navigation}) => {
           icon={open ? 'plus' : 'plus'}
           actions={[
             {
-              icon: '',
+              icon: 'alarm',
               label: 'Novo Alarme',
               onPress: showDateTimePicker,
             },

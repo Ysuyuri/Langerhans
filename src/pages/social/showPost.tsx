@@ -78,6 +78,7 @@ const Postshow = (props, {navigation}) => {
             numberOfLines={2} 
             style={{ flex: 1 }}
             placeholder="Digite seu comentário!"
+            placeholderTextColor="#a0a0a0"
             value={post}
             onChangeText={(value) => setPost(value)}>
             </TextInput>
@@ -109,20 +110,20 @@ const Postshow = (props, {navigation}) => {
               <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <View>
                   <Text style={styles.name}>{dev.Nome}</Text>
-                  <Text style={styles.post}>{dev.Comment}</Text>
+                  <Text style={styles.comment}>{dev.Comment}</Text>
                   <Text style={styles.timestamp}>{moment(dev.DataComment).format('DD/MM/YYYY HH:mm')}</Text>
                 </View>
 
                 {(() => {
                   if (uidPost == uid) {
                     return (
-                      <TouchableOpacity onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
+                      <TouchableOpacity style={styles.trash} onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
                         <Icon name='trash-2' type='feather' color="#73788B"/>
                       </TouchableOpacity>
                     )
                   } else if (uid == dev.uid) {
                     return (
-                      <TouchableOpacity onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
+                      <TouchableOpacity  onPress={() => {db.collection("Posts").doc(Id).collection("Comment").doc(dev.Id).delete()}}>
                         <Icon name='trash-2' type='feather' color="#73788B"/>
                       </TouchableOpacity>
                     )
@@ -165,9 +166,14 @@ const styles = StyleSheet.create ({
     borderRadius: 18,
     marginRight: 16,
   },
-    submite: {
+  submite: {
     alignItems: "flex-end",
     marginHorizontal: 32
+  },
+  trash: {
+    marginHorizontal: 10,
+    right: 0,
+    position: 'absolute'
   },
   feedItem: {
     backgroundColor: "#FFF",
@@ -201,6 +207,12 @@ const styles = StyleSheet.create ({
   },
   post: {
     marginTop: 0,
+    fontSize: 14,
+    color: "#838899"
+  },
+  comment: {
+    marginTop: 0,
+    marginRight: 50,
     fontSize: 14,
     color: "#838899"
   },

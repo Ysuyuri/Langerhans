@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, Text, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, Text, KeyboardAvoidingView, ActivityIndicator, Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { Icon } from '@rneui/themed';
 
@@ -8,28 +8,10 @@ import { CommonActions } from '@react-navigation/native';
 import {useFocusEffect} from '@react-navigation/native';
 require('firebase/auth');
 
-const Login = (props, { navigation }) => {
+const novasenha = (props, { navigation }) => {
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorLogin, setErrorLogin] = useState("");
     const [isLoading, setIsLoading] = useState(true)
-
-    const loginFirebase = () => {
-      firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        let user = userCredential.user;
-        props.navigation.replace('ExamesScreen', { email: user.email })
-        setEmail("");
-        setPassword("");
-        setErrorLogin(false)
-      })
-      .catch((error) => {
-        setErrorLogin(true)
-        let errorCode = error.code;
-        let errorMessage = error.message;
-      })
-    }
 
     useFocusEffect(
       React.useCallback(() => {
@@ -43,20 +25,31 @@ const Login = (props, { navigation }) => {
         });
       }, []),
     );
-    
 
-    const TelaCadastro = () => {
-      props.navigation.navigate('Cadastro')
-      setEmail("");
-      setPassword("");
-      setErrorLogin(false);
-    }
-
-    const novasenha = () => {
-      props.navigation.navigate('novasenha')
-      setEmail("");
-      setPassword("");
-      setErrorLogin(false);
+    const novasenha_ = () => {
+        firebase.auth().sendPasswordResetEmail(email).then(() => {
+            Alert.alert(
+                "Alteração de Senha",
+                "Foi enviado um email de recuperação de senha para sua conta de E-mail. Caso não encontre, verifique sua caixa de spam.",
+                [
+                    {
+                        text: "Ok",
+                        onPress: () => {props.navigation.navigate('Login')}
+                    }
+                ]
+            )
+        }).catch((error) => {
+          Alert.alert(
+            "Erro",
+            "Credencial inválida! Tente novamente.",
+            [
+                {
+                    text: "Ok",
+                    onPress: () => {setEmail('')}
+                }
+            ]
+        )
+        })
     }
 
     if (isLoading == true) {
@@ -83,36 +76,12 @@ const Login = (props, { navigation }) => {
               onChangeText={(value) => setEmail(value)}
             />
     
-            <TextInput  style={styles.input}
-              placeholder="Senha"
-              placeholderTextColor="#a0a0a0"
-              secureTextEntry
-              value={password}
-              onChangeText={(value) => setPassword(value)}
-            />
-
-              <View style={styles.esqsen}>
-                <TouchableOpacity onPress={novasenha}>
-                  <Text style={styles.textSenha}>Esqueci minha senha!</Text>
-                </TouchableOpacity>
-              </View>
-
-            {errorLogin == true
-            ?
-              <View style={styles.contentAlert}>
-                <Icon name="alert" type="foundation" size={24} color="#bdbdbd"/>
-                <Text style={styles.warningAlert}>Email ou senha inválido!</Text>
-              </View>
-            :
-              <View/>
-            }
-    
-            <TouchableOpacity style={styles.botaoLogin} onPress={loginFirebase}> 
-              <Text style={styles.botaoTextLogin}>Entrar</Text>          
+            <TouchableOpacity style={styles.botaoLogin} onPress={novasenha_}> 
+              <Text style={styles.botaoTextLogin}>Recuperar senha</Text>          
             </TouchableOpacity>
     
-            <TouchableOpacity style={styles.botaoCadastro} onPress={TelaCadastro} > 
-              <Text style={styles.botaoTextCadastro}>Cadastrar</Text>
+            <TouchableOpacity style={styles.botaoCadastro} onPress={() => {props.navigation.navigate('Login')}} > 
+              <Text style={styles.botaoTextCadastro}>Voltar</Text>
             </TouchableOpacity>
             </KeyboardAvoidingView>
           </View>
@@ -198,4 +167,4 @@ const Login = (props, { navigation }) => {
     }
   });
 
-  export default Login;
+  export default novasenha;

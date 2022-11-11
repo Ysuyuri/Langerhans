@@ -38,6 +38,7 @@ const EditPost = (props, {navigation}) => {
                 numberOfLines={3} 
                 style={{ flex: 1 }}
                 placeholder={pub}
+                placeholderTextColor="#a0a0a0"
                 value={post}
                 onChangeText={(value) => setPost(value)}>
                 </TextInput>

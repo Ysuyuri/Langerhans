@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, Alert, StyleSheet, View, Image, ImageBackground, TouchableOpacity, Text, KeyboardAvoidingView, TouchableNativeFeedbackComponent } from 'react-native';
+import { TextInput, Alert, StyleSheet, View, Image, ImageBackground, TouchableOpacity, Text, KeyboardAvoidingView } from 'react-native';
 import { cpf } from 'cpf-cnpj-validator';
 import { TextInputMask } from 'react-native-masked-text';
 
@@ -24,12 +24,6 @@ const Cadastro = ({ navigation }) => {
         cpf: cpf_,
         data_nascimento: data
     })
-    .then(() => {
-        console.log("Document successfully written!");
-    })
-    .catch((error) => {
-        console.error("Error writing document: ", error);
-    });
     }
 
     function registerFirebase() {
@@ -123,7 +117,9 @@ const Cadastro = ({ navigation }) => {
           <View style={styles.containerMask}>
 
           <TextInput style={styles.maskedInput}
+            selectionColor="black"
             placeholder="Nome"
+            placeholderTextColor="#a0a0a0"
             value={name}
             onChangeText={(value) => setName(value)}
           />
@@ -134,8 +130,10 @@ const Cadastro = ({ navigation }) => {
 
             <TextInputMask 
               type={'cpf'}
+              selectionColor="black"
               style={styles.maskedInput}
               placeholder="CPF"
+              placeholderTextColor="#a0a0a0"
               value={cpf_}
               onChangeText={(value) => setCPF_(value)}
             />
@@ -146,9 +144,11 @@ const Cadastro = ({ navigation }) => {
           
             <TextInputMask 
               type={'datetime'}
+              selectionColor="black"
               options={{ format: 'DD/MM/YYYY' }}
               style={styles.maskedInput}
               placeholder="Data de Nascimento"
+              placeholderTextColor="#a0a0a0"
               value={data}
               onChangeText={(value) => setData(value)}
             />
@@ -157,8 +157,11 @@ const Cadastro = ({ navigation }) => {
 
           <View style={styles.containerMask}>
 
-          <TextInput  style={styles.maskedInput}
+          <TextInput  
+            selectionColor="black"
+            style={styles.maskedInput}
             placeholder="Email"
+            placeholderTextColor="#a0a0a0"
             value={email}
             onChangeText={(value) => setEmail(value)}
           />
@@ -167,8 +170,11 @@ const Cadastro = ({ navigation }) => {
 
           <View style={styles.containerMask}>
 
-          <TextInput  style={styles.maskedInput}
+          <TextInput
+            selectionColor="black"  
+            style={styles.maskedInput}
             placeholder="Senha"
+            placeholderTextColor="#a0a0a0"
             secureTextEntry
             value={password}
             onChangeText={(value) => setPassword(value)}
@@ -178,8 +184,11 @@ const Cadastro = ({ navigation }) => {
 
           <View style={styles.containerMask}>
 
-          <TextInput  style={styles.maskedInput}
+          <TextInput  
+            selectionColor="black"
+            style={styles.maskedInput}
             placeholder="Confirme sua senha"
+            placeholderTextColor="#a0a0a0"
             secureTextEntry
             value={confpassword}
             onChangeText={(value) => setConfPassword(value)}
@@ -244,6 +253,7 @@ const Cadastro = ({ navigation }) => {
       color: "black"
     },
     containerMask:{
+      backgroundColor: 'white',
       flexDirection: "row",
       marginTop: 2,
       marginLeft: 0,
